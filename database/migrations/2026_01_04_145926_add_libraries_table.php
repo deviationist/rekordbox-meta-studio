@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('libraries', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->uuid('id')->primary();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
             $table->string('slug')->unique();

@@ -2,14 +2,14 @@ import { Head, Link } from '@inertiajs/react';
 import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
-import libraries from '@/routes/libraries';
-import library from '@/routes/library';
+import { useRoute } from '@/hooks/use-route';
 
 interface LibraryConnectionErrorProps {
   message: string;
 }
 
 export default function LibraryConnectionError({ message }: LibraryConnectionErrorProps) {
+  const route = useRoute();
   return (
     <>
       <Head title="Library Connection Error" />
@@ -38,12 +38,12 @@ export default function LibraryConnectionError({ message }: LibraryConnectionErr
 
           <div className="flex gap-2">
             <Button asChild variant="default">
-              <Link href={libraries.index().url}>
+              <Link href={route('libraries.index')}>
                 Manage Libraries
               </Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href={library.select().url}>
+              <Link href={route('library.select')}>
                 Select Different Library
               </Link>
             </Button>

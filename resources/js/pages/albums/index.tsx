@@ -1,18 +1,11 @@
 import { DataTable } from '@/components/table/data-table';
 import AppLayout from '@/layouts/app-layout';
-import { albums } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 import { Album } from '@/types/rekordbox/album';
 import { Head } from '@inertiajs/react';
 import { columnConfig } from './column-config';
-
-const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Library' },
-  {
-    title: 'Albums',
-    href: albums.index().url,
-  },
-];
+import { useMemo } from 'react';
+import { useRoute } from '@/hooks/use-route';
 
 interface Props {
   data: {
@@ -30,7 +23,15 @@ interface Props {
 }
 
 export default function Index({ data, filters }: Props) {
+  const route = useRoute();
   const { meta, data: items } = data;
+  const breadcrumbs: BreadcrumbItem[] = useMemo(() => [
+    { title: 'Library' },
+    {
+      title: 'Albums',
+      href: route('library.albums.index'),
+    },
+  ], [route]);
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Albums" />

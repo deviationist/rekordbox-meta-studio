@@ -28,6 +28,7 @@ export default defineConfig({
             formVariants: true,
         }),
     ],
+    /*
     server: {
         host: '0.0.0.0',
         port: 5173,
@@ -40,6 +41,7 @@ export default defineConfig({
         },
         origin: 'https://rb.ichiva.no',
     },
+    */
     esbuild: {
         jsx: 'automatic',
     },

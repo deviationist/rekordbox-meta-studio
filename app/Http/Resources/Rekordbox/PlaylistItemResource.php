@@ -8,8 +8,8 @@ class PlaylistItemResource extends BaseResource
     {
         return [
             'id' => $this->ID,
-            'playlist' => new PlaylistResource($this->playlist),
-            'track' => new TrackResource($this->track),
+            'playlist' => PlaylistResource::make($this->playlist)->resolve(),
+            'track' => TrackResource::make($this->track)->resolve(),
             'trackNumber' => $this->TrackNo,
         ];
     }

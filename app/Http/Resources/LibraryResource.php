@@ -18,7 +18,6 @@ class LibraryResource extends JsonResource
             'id' => $this->id,
             'userId' => $this->user->id,
             'name' => $this->name,
-            'slug' => $this->slug,
             'filePath' => $this->file_path,
             'storedFile' => $this->stored_file,
             'isRekordboxFolder' => $this->is_rekordbox_folder,

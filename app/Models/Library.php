@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,12 +12,14 @@ use Illuminate\Support\Facades\Crypt;
 
 class Library extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasUuids;
+
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     protected $fillable = [
         'user_id',
         'name',
-        'slug',
         'file_path',
         'stored_file',
         'is_rekordbox_folder',
@@ -31,20 +34,17 @@ class Library extends Model
         'password',
     ];
 
-    public function getRouteKeyName(): string
+    /**
+     * Get the default library (first by name)
+     */
+    public function scopeGetDefault($query)
     {
-        return 'slug';
+        return $query->orderBy('name', 'asc')->first();
     }
 
     protected static function boot()
     {
         parent::boot();
-
-        static::creating(function ($library) {
-            if (empty($library->slug)) {
-                $library->slug = static::generateUniqueSlug($library->name, $library->user_id);
-            }
-        });
 
         static::deleting(function ($library) {
             // Clean up stored file when library is deleted
@@ -52,23 +52,6 @@ class Library extends Model
                 Storage::delete($library->stored_file);
             }
         });
-    }
-
-    /**
-     * Generate a unique slug from the library name
-     */
-    protected static function generateUniqueSlug(string $name, int $userId): string
-    {
-        $slug = Str::slug($name);
-        $originalSlug = $slug;
-        $counter = 1;
-
-        while (static::where('user_id', $userId)->where('slug', $slug)->exists()) {
-            $slug = $originalSlug . '-' . $counter;
-            $counter++;
-        }
-
-        return $slug;
     }
 
     /**

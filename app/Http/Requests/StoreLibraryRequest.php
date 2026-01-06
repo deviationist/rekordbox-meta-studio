@@ -22,7 +22,6 @@ class StoreLibraryRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255', 'alpha_dash', Rule::unique('libraries')->where('user_id', $this->user()->id)],
             'file_upload' => ['nullable', 'file', 'mimes:sqlite,sqlite3,db', 'max:512000'], // 500MB max
             'file_path' => ['nullable', 'string', 'max:1024'],
             'is_rekordbox_folder' => ['boolean'],

@@ -75,36 +75,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
             });
         });
     });
-
-    /*
-    Route::prefix('library')->group(function () {
-        Route::get('/', fn () => redirect()->route('tracks.index'));
-        Route::prefix('tracks')->group(function () {
-        Route::get('/', [TrackController::class, 'index'])->name('tracks.index');
-            Route::get('/{track}', [TrackController::class, 'show'])->name('tracks.show');
-        });
-        Route::prefix('playlists')->group(function () {
-            Route::get('/', [PlaylistController::class, 'index'])->name('playlists.index');
-            Route::get('/{playlist}', [PlaylistController::class, 'show'])->name('playlists.show');
-        });
-        Route::prefix('artists')->group(function () {
-            Route::get('/', [ArtistController::class, 'index'])->name('artists.index');
-            Route::get('/{artist}', [ArtistController::class, 'show'])->name('artists.show');
-        });
-        Route::prefix('albums')->group(function () {
-            Route::get('/', [AlbumController::class, 'index'])->name('albums.index');
-            Route::get('/{album}', [AlbumController::class, 'show'])->name('albums.show');
-        });
-        Route::prefix('genres')->group(function () {
-            Route::get('/', [GenreController::class, 'index'])->name('genres.index');
-            Route::get('/{genre}', [GenreController::class, 'show'])->name('genres.show');
-        });
-        Route::prefix('labels')->group(function () {
-            Route::get('/', [LabelController::class, 'index'])->name('labels.index');
-            Route::get('/{label}', [LabelController::class, 'show'])->name('labels.show');
-        });
-    });
-    */
 });
 
 require __DIR__.'/settings.php';

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use App\Models\Library;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -55,13 +56,6 @@ class HandleInertiaRequests extends Middleware
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'entityCount' => function () use ($request) {
-                // Only compute if we have a current library (meaning LoadLibrary ran)
-                $currentLibrary = $request->get('currentLibrary');
-
-                if (!$currentLibrary) {
-                    return null;
-                }
-
                 try {
                     return $this->entityCount();
                 } catch (\Exception $e) {
@@ -73,9 +67,11 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'currentLibrary' => fn () => $request->get('currentLibrary'),
+            'defaultLibrary' => fn () => $request->user()
+                ? Library::forUser($request->user()->id)->getDefault()?->id
+                : null,
             'userLibraries' => fn () => $request->user()
-                ? \App\Models\Library::forUser($request->user()->id)->get(['id', 'name', 'slug'])
+                ? Library::forUser($request->user()->id)->get(['id', 'name'])
                 : null,
         ];
     }

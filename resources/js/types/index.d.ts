@@ -1,5 +1,6 @@
 import { InertiaLinkProps } from '@inertiajs/react';
 import { LucideIcon } from 'lucide-react';
+import { Library } from './library';
 
 export interface Auth {
   user: User;
@@ -50,7 +51,7 @@ export interface SharedData {
     entityCount: EntityCount;
     auth: Auth;
     sidebarOpen: boolean;
-    currentLibrary?: Library;
+    defaultLibrary?: Library;
     userLibraries?: Library[];
     [key: string]: unknown;
 }

@@ -66,10 +66,10 @@ class LibraryController extends Controller
      */
     public function edit(Library $library)
     {
-        $this->authorize('update', $library);
+        //$this->authorize('update', $library);
 
         return Inertia::render('libraries/edit', [
-            'library' => new LibraryResource($library),
+            'library' => LibraryResource::make($library)->resolve(),
         ]);
     }
 
@@ -127,7 +127,7 @@ class LibraryController extends Controller
         $libraries = Library::forUser(Auth::id())->get();
 
         if ($libraries->count() === 1) {
-            return redirect()->route('library.tracks', ['library' => $libraries->first()->slug]);
+            return redirect()->route('library.tracks', ['library' => $libraries->first()]);
         }
 
         return Inertia::render('libraries/select', [

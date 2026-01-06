@@ -15,6 +15,23 @@ class LoadLibrary
         protected LibraryConnectionManager $connectionManager
     ) {}
 
+    private function getExplicitLibrary(Request $request): Library | null
+    {
+        if ($library = $request->route('library')) {
+            return $library;
+        }
+
+        $libraryFromHeader = $request->header('X-Library-Id');
+        if ($libraryFromHeader) {
+            $userId = Auth::id();
+            if ($library = Library::forUser($userId)->where('id', $libraryFromHeader)->get()) {
+                return $library;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Handle an incoming request.
      */
@@ -24,40 +41,25 @@ class LoadLibrary
             return $next($request);
         }
 
-        $userId = Auth::id();
-        $slug = $request->route('library');
+        $library = $this->getExplicitLibrary($request);
 
-        // Get user's libraries
-        $libraries = Library::forUser($userId)->get();
+        if (!$library) {
+            // Fallback to default library
+            $userId = Auth::id();
 
-        if ($libraries->isEmpty()) {
-            // No libraries - redirect to library creation
-            return redirect()->route('libraries.create');
-        }
+            // Get user's libraries
+            $libraries = Library::forUser($userId)->get();
 
-        // Determine which library to use
-        if ($slug) {
-            // Specific library requested
-            $library = $libraries->firstWhere('slug', $slug);
-
-            if (!$library) {
-                abort(404, 'Library not found');
-            }
-        } else {
-            // No slug - use first library (single library scenario)
-            if ($libraries->count() > 1) {
-                // Multiple libraries but no slug - redirect to library selector
-                return redirect()->route('library.select');
+            if ($libraries->isEmpty()) {
+                // No libraries - redirect to library creation
+                return redirect()->route('libraries.create');
             }
 
-            $library = $libraries->first();
+            $library = Library::forUser($userId)->getDefault();
         }
 
         // Configure the rekordbox connection
         $this->connectionManager->configureConnection($library);
-
-        // Share library data with Inertia
-        $request->merge(['currentLibrary' => $library]);
 
         return $next($request);
     }

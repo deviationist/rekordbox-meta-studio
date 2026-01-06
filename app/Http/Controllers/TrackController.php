@@ -3,18 +3,19 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\Rekordbox\TrackResource;
+use App\Models\Library;
 use App\Models\Rekordbox\Track;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
 class TrackController extends Controller
 {
-    public function index(Request $request): Response
+    public function index(Request $request, Library $library): Response
     {
         $perPage = $request->integer('per_page', 50);
 
         $query = Track::query()
-            ->with(['artist', 'album', 'genre']);
+            ->with(['artist', 'album', 'genre', 'label', 'remixer', 'originalArtist', 'key', 'composer']);
 
         // Apply filters
         if ($request->filled('search')) {
@@ -71,7 +72,7 @@ class TrackController extends Controller
         $track->load(['artist', 'album', 'genre']);
 
         return inertia('tracks/show', [
-            'track' => new TrackResource($track),
+            'track' => TrackResource::make($track)->resolve(),
         ]);
     }
 }

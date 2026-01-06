@@ -4,7 +4,7 @@ import { RekordboxCommon } from "./common";
 export interface Album extends RekordboxCommon {
   id: string;
   name: string;
-  albumArtist: Artist;
+  artist: Artist;
   imagePath: string;
   compilation: number;
   //searchString: string;

@@ -9,7 +9,7 @@ class AlbumResource extends BaseResource
         return [
             'id' => $this->ID,
             'name' => $this->Name,
-            'albumArtist' => new ArtistResource($this->albumArtist),
+            'artist' => ArtistResource::make($this->artist)->resolve(),
             'imagePath' => $this->ImagePath,
             'compilation' => $this->Compilation,
             'trackCount' => count($this->tracks),

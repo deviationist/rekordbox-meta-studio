@@ -70,6 +70,20 @@ class Track extends Model
         );
     }
 
+    /*
+    public function tags(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Playlist::class,
+            PlaylistItem::class,
+            'ContentID', // Foreign key on PlaylistItem table...
+            'ID',        // Foreign key on Playlist table...
+            'ID',        // Local key on Track table...
+            'PlaylistID' // Local key on PlaylistItem table...
+        );
+    }
+    */
+
     public function label(): BelongsTo
     {
         return $this->belongsTo(Label::class, 'LabelID', 'ID');
@@ -109,14 +123,4 @@ class Track extends Model
     {
         return $this->belongsTo(Genre::class, 'GenreID', 'ID');
     }
-
-    /*public playlists(): HasMany
-    {
-        return $this->hasManyThrough(Playlist::class, 'ID')
-    }*/
-
-    /*public tags(): HasMany
-    {
-        return $this->hasManyThrough(Playlist::class, 'ID')
-    }*/
 }

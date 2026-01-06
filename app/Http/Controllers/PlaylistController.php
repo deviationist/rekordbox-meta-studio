@@ -13,7 +13,8 @@ class PlaylistController extends Controller
     {
         $perPage = $request->integer('per_page', 50);
 
-        $query = Playlist::query();
+        $query = Playlist::query()
+            ->with(['tracks']);
 
         // Apply filters
         if ($request->filled('search')) {

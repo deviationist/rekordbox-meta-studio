@@ -67,16 +67,65 @@ declare module 'ziggy-js' {
     ],
     "library.redirect": [],
     "library.select": [],
-    "library.tracks.index": [
-        {
-            "name": "library",
-            "required": false
-        }
-    ],
+    "library.tracks.index": [],
     "library.tracks.show": [
         {
+            "name": "track",
+            "required": true,
+            "binding": "ID"
+        }
+    ],
+    "library.playlists.index": [],
+    "library.playlists.show": [
+        {
+            "name": "playlist",
+            "required": true,
+            "binding": "ID"
+        }
+    ],
+    "library.artists.index": [],
+    "library.artists.show": [
+        {
+            "name": "artist",
+            "required": true,
+            "binding": "ID"
+        }
+    ],
+    "library.albums.index": [],
+    "library.albums.show": [
+        {
+            "name": "album",
+            "required": true,
+            "binding": "ID"
+        }
+    ],
+    "library.genres.index": [],
+    "library.genres.show": [
+        {
+            "name": "genre",
+            "required": true,
+            "binding": "ID"
+        }
+    ],
+    "library.labels.index": [],
+    "library.labels.show": [
+        {
+            "name": "label",
+            "required": true,
+            "binding": "ID"
+        }
+    ],
+    "library.named.tracks.index": [
+        {
             "name": "library",
-            "required": false
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "library.named.tracks.show": [
+        {
+            "name": "library",
+            "required": true
         },
         {
             "name": "track",
@@ -84,16 +133,16 @@ declare module 'ziggy-js' {
             "binding": "ID"
         }
     ],
-    "library.playlists.index": [
+    "library.named.playlists.index": [
         {
             "name": "library",
-            "required": false
+            "required": true
         }
     ],
-    "library.playlists.show": [
+    "library.named.playlists.show": [
         {
             "name": "library",
-            "required": false
+            "required": true
         },
         {
             "name": "playlist",
@@ -101,16 +150,16 @@ declare module 'ziggy-js' {
             "binding": "ID"
         }
     ],
-    "library.artists.index": [
+    "library.named.artists.index": [
         {
             "name": "library",
-            "required": false
+            "required": true
         }
     ],
-    "library.artists.show": [
+    "library.named.artists.show": [
         {
             "name": "library",
-            "required": false
+            "required": true
         },
         {
             "name": "artist",
@@ -118,16 +167,16 @@ declare module 'ziggy-js' {
             "binding": "ID"
         }
     ],
-    "library.albums.index": [
+    "library.named.albums.index": [
         {
             "name": "library",
-            "required": false
+            "required": true
         }
     ],
-    "library.albums.show": [
+    "library.named.albums.show": [
         {
             "name": "library",
-            "required": false
+            "required": true
         },
         {
             "name": "album",
@@ -135,16 +184,16 @@ declare module 'ziggy-js' {
             "binding": "ID"
         }
     ],
-    "library.genres.index": [
+    "library.named.genres.index": [
         {
             "name": "library",
-            "required": false
+            "required": true
         }
     ],
-    "library.genres.show": [
+    "library.named.genres.show": [
         {
             "name": "library",
-            "required": false
+            "required": true
         },
         {
             "name": "genre",
@@ -152,16 +201,16 @@ declare module 'ziggy-js' {
             "binding": "ID"
         }
     ],
-    "library.labels.index": [
+    "library.named.labels.index": [
         {
             "name": "library",
-            "required": false
+            "required": true
         }
     ],
-    "library.labels.show": [
+    "library.named.labels.show": [
         {
             "name": "library",
-            "required": false
+            "required": true
         },
         {
             "name": "label",

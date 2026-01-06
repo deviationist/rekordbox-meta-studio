@@ -8,8 +8,8 @@ class TagItemResource extends BaseResource
     {
         return [
             'id' => $this->ID,
-            'tag' => new TagResource($this->tag),
-            'track' => new TrackResource($this->track),
+            'tag' => TagResource::make($this->tag)->resolve(),
+            'track' => TrackResource::make($this->track)->resolve(),
             'trackNumber' => $this->TrackNo,
         ];
     }

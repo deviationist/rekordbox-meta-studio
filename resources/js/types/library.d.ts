@@ -1,8 +1,7 @@
 export interface Library {
-  id: number;
+  id: string;
   userId: number;
   name: string;
-  slug: string;
   filePath: string | null;
   storedFile: string | null;
   isRekordboxFolder: boolean;

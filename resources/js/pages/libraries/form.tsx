@@ -16,7 +16,6 @@ export function LibraryForm({ library }: LibraryFormProps) {
   const route = useRoute();
   const { data, setData, post, put, processing, errors, transform } = useForm({
     name: library?.name || '',
-    slug: library?.slug || '',
     file_upload: null as File | null,
     file_path: library?.filePath || '',
     is_rekordbox_folder: library?.isRekordboxFolder || false,
@@ -32,9 +31,6 @@ export function LibraryForm({ library }: LibraryFormProps) {
     const formData = new FormData();
 
     formData.append('name', data.name);
-    if (data.slug) {
-      formData.append('slug', data.slug);
-    }
 
     if (sourceType === 'upload' && data.file_upload) {
       formData.append('file_upload', data.file_upload);
@@ -78,21 +74,6 @@ export function LibraryForm({ library }: LibraryFormProps) {
           required
         />
         {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
-      </div>
-
-      {/* Slug (optional override) */}
-      <div className="space-y-2">
-        <Label htmlFor="slug">URL Slug (optional)</Label>
-        <Input
-          id="slug"
-          value={data.slug}
-          onChange={(e) => setData('slug', e.target.value)}
-          placeholder="Auto-generated from name"
-        />
-        <p className="text-sm text-muted-foreground">
-          Leave empty to auto-generate from library name
-        </p>
-        {errors.slug && <p className="text-sm text-destructive">{errors.slug}</p>}
       </div>
 
       {/* Database Source */}

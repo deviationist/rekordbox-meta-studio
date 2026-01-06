@@ -15,7 +15,6 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('slug')->unique();
 
             // File storage OR path to file
             $table->string('file_path')->nullable(); // Path to SQLite file on disk
@@ -31,7 +30,7 @@ return new class extends Migration
             $table->softDeletes();
 
             // Ensure exactly one of file_path or stored_file is set
-            $table->index(['user_id', 'slug']);
+            $table->index(['user_id']);
         });
     }
 

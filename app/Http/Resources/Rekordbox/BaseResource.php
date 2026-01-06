@@ -34,6 +34,9 @@ abstract class BaseResource extends JsonResource
 
     public function toArray($request)
     {
+        if (is_null($this->resource)) {
+            return null;
+        }
         return array_merge(
             $this->commonFields(),
             $this->additionalFields()

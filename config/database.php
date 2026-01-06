@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION', 'rekordbox'),
 
     /*
     |--------------------------------------------------------------------------
@@ -30,18 +30,22 @@ return [
     */
 
     'connections' => [
+        /*'rekordbox' => [
+            'driver' => 'sqlcipher',
+        ],*/
 
-        'sqlite' => [
-            'driver' => 'sqlite',
-            'url' => env('DB_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+        /*
+        'rekordbox' => [
+            'driver' => 'sqlcipher',
+            'database' => env('REKORDBOX_DB_PATH'),
             'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
-            'busy_timeout' => null,
-            'journal_mode' => null,
-            'synchronous' => null,
-            'transaction_mode' => 'DEFERRED',
+            'foreign_key_constraints' => true,
+            'pragma' => [
+                'key' => env('REKORDBOX_DB_KEY'),
+                'cipher_compatibility' => 4,
+            ],
         ],
+        */
 
         'mysql' => [
             'driver' => 'mysql',
@@ -61,6 +65,19 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 (PHP_VERSION_ID >= 80500 ? \Pdo\Mysql::ATTR_SSL_CA : \PDO::MYSQL_ATTR_SSL_CA) => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+        ],
+
+        /*
+        'sqlite' => [
+            'driver' => 'sqlite',
+            'url' => env('DB_URL'),
+            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'prefix' => '',
+            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'busy_timeout' => null,
+            'journal_mode' => null,
+            'synchronous' => null,
+            'transaction_mode' => 'DEFERRED',
         ],
 
         'mariadb' => [
@@ -112,6 +129,7 @@ return [
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
+        */
 
     ],
 

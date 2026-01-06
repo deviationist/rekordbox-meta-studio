@@ -1,0 +1,2 @@
+#!/bin/bash
+DYLD_INSERT_LIBRARIES=/opt/homebrew/opt/sqlcipher/lib/libsqlcipher.0.dylib exec php "$@"

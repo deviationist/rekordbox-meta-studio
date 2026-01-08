@@ -24,7 +24,7 @@ class LoadLibrary
         $libraryFromHeader = $request->header('X-Library-Id');
         if ($libraryFromHeader) {
             $userId = Auth::id();
-            if ($library = Library::forUser($userId)->where('id', $libraryFromHeader)->get()) {
+            if ($library = Library::forUser($userId)->where('id', $libraryFromHeader)->first()) {
                 return $library;
             }
         }

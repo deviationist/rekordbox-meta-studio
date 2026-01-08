@@ -1,0 +1,36 @@
+#!/bin/bash
+
+SQLITE_LIB="/opt/homebrew/opt/sqlite/lib/libsqlite3.dylib"
+SQLITE_BACKUP="/opt/homebrew/opt/sqlite/lib/libsqlite3.dylib.backup"
+SQLCIPHER_LIB="/opt/homebrew/opt/sqlcipher/lib/libsqlcipher.0.dylib"
+
+case "$1" in
+  link)
+    if [ ! -f "$SQLITE_BACKUP" ]; then
+      sudo cp "$SQLITE_LIB" "$SQLITE_BACKUP"
+      echo "✓ Backed up original SQLite"
+    fi
+    sudo rm -f "$SQLITE_LIB"
+    sudo ln -s "$SQLCIPHER_LIB" "$SQLITE_LIB"
+    echo "✓ SQLCipher symlink created"
+    ;;
+  unlink)
+    sudo rm -f "$SQLITE_LIB"
+    if [ -f "$SQLITE_BACKUP" ]; then
+      sudo mv "$SQLITE_BACKUP" "$SQLITE_LIB"
+      echo "✓ Original SQLite restored"
+    fi
+    ;;
+  check)
+    if [ -L "$SQLITE_LIB" ]; then
+      echo "✓ SQLCipher is linked"
+      ls -la "$SQLITE_LIB"
+    else
+      echo "✗ SQLCipher is not linked"
+    fi
+    ;;
+  *)
+    echo "Usage: $0 {link|unlink|check}"
+    exit 1
+    ;;
+esac

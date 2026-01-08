@@ -34,7 +34,6 @@ return [
             'driver' => 'sqlcipher',
         ],*/
 
-        /*
         'rekordbox' => [
             'driver' => 'sqlcipher',
             'database' => env('REKORDBOX_DB_PATH'),
@@ -45,7 +44,6 @@ return [
                 'cipher_compatibility' => 4,
             ],
         ],
-        */
 
         'mysql' => [
             'driver' => 'mysql',

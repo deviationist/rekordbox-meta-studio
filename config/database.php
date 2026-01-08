@@ -30,21 +30,6 @@ return [
     */
 
     'connections' => [
-        /*'rekordbox' => [
-            'driver' => 'sqlcipher',
-        ],*/
-
-        'rekordbox' => [
-            'driver' => 'sqlcipher',
-            'database' => env('REKORDBOX_DB_PATH'),
-            'prefix' => '',
-            'foreign_key_constraints' => true,
-            'pragma' => [
-                'key' => env('REKORDBOX_DB_KEY'),
-                'cipher_compatibility' => 4,
-            ],
-        ],
-
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),

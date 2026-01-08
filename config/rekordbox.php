@@ -1,14 +1,5 @@
 <?php
 
-// Old config:
-/*
-return [
-    'folder_path' => env('REKORDBOX_FOLDER_PATH'),
-    'database_path' => env('REKORDBOX_DB_PATH'),
-    'database_key' => env('REKORDBOX_DB_KEY'),
-];
-*/
-
 return [
     /*
     |--------------------------------------------------------------------------

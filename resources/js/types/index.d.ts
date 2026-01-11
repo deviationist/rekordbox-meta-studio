@@ -25,6 +25,7 @@ export type NavItem = {
 
 export type MainNavItem = Omit<NavItem, 'href'> & {
   key?: string;
+  displayCount?: boolean;
 } & (
     | {
           items: MainNavItem[];

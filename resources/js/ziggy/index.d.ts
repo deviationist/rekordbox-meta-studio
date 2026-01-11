@@ -65,67 +65,33 @@ declare module 'ziggy-js' {
             "binding": "id"
         }
     ],
-    "library.redirect": [],
+    "library.redirect-to-default-library": [],
     "library.select": [],
-    "library.tracks.index": [],
-    "library.tracks.show": [
-        {
-            "name": "track",
-            "required": true,
-            "binding": "ID"
-        }
-    ],
-    "library.playlists.index": [],
-    "library.playlists.show": [
-        {
-            "name": "playlist",
-            "required": true,
-            "binding": "ID"
-        }
-    ],
-    "library.artists.index": [],
-    "library.artists.show": [
-        {
-            "name": "artist",
-            "required": true,
-            "binding": "ID"
-        }
-    ],
-    "library.albums.index": [],
-    "library.albums.show": [
-        {
-            "name": "album",
-            "required": true,
-            "binding": "ID"
-        }
-    ],
-    "library.genres.index": [],
-    "library.genres.show": [
-        {
-            "name": "genre",
-            "required": true,
-            "binding": "ID"
-        }
-    ],
-    "library.labels.index": [],
-    "library.labels.show": [
-        {
-            "name": "label",
-            "required": true,
-            "binding": "ID"
-        }
-    ],
-    "library.named.tracks.index": [
+    "library.redirect-to-default-route": [
         {
             "name": "library",
             "required": true,
             "binding": "id"
         }
     ],
-    "library.named.tracks.show": [
+    "library.entity-count": [
         {
             "name": "library",
             "required": true
+        }
+    ],
+    "library.tracks.index": [
+        {
+            "name": "library",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "library.tracks.show": [
+        {
+            "name": "library",
+            "required": true,
+            "binding": "id"
         },
         {
             "name": "track",
@@ -133,13 +99,26 @@ declare module 'ziggy-js' {
             "binding": "ID"
         }
     ],
-    "library.named.playlists.index": [
+    "library.tracks.artwork.show": [
         {
             "name": "library",
-            "required": true
+            "required": true,
+            "binding": "id"
+        },
+        {
+            "name": "track",
+            "required": true,
+            "binding": "ID"
         }
     ],
-    "library.named.playlists.show": [
+    "library.playlists.index": [
+        {
+            "name": "library",
+            "required": true,
+            "binding": "id"
+        }
+    ],
+    "library.playlists.show": [
         {
             "name": "library",
             "required": true
@@ -150,13 +129,25 @@ declare module 'ziggy-js' {
             "binding": "ID"
         }
     ],
-    "library.named.artists.index": [
+    "library.playlists.artwork.show": [
+        {
+            "name": "library",
+            "required": true,
+            "binding": "id"
+        },
+        {
+            "name": "playlist",
+            "required": true,
+            "binding": "ID"
+        }
+    ],
+    "library.artists.index": [
         {
             "name": "library",
             "required": true
         }
     ],
-    "library.named.artists.show": [
+    "library.artists.show": [
         {
             "name": "library",
             "required": true
@@ -167,13 +158,13 @@ declare module 'ziggy-js' {
             "binding": "ID"
         }
     ],
-    "library.named.albums.index": [
+    "library.albums.index": [
         {
             "name": "library",
             "required": true
         }
     ],
-    "library.named.albums.show": [
+    "library.albums.show": [
         {
             "name": "library",
             "required": true
@@ -184,13 +175,13 @@ declare module 'ziggy-js' {
             "binding": "ID"
         }
     ],
-    "library.named.genres.index": [
+    "library.genres.index": [
         {
             "name": "library",
             "required": true
         }
     ],
-    "library.named.genres.show": [
+    "library.genres.show": [
         {
             "name": "library",
             "required": true
@@ -201,13 +192,13 @@ declare module 'ziggy-js' {
             "binding": "ID"
         }
     ],
-    "library.named.labels.index": [
+    "library.labels.index": [
         {
             "name": "library",
             "required": true
         }
     ],
-    "library.named.labels.show": [
+    "library.labels.show": [
         {
             "name": "library",
             "required": true

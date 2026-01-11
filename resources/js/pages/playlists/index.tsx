@@ -1,4 +1,4 @@
-import { DataTable } from '@/components/table/data-table';
+import { Table, PaginationMeta } from '@/components/table/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Playlist } from '@/types/rekordbox/playlist';
@@ -7,22 +7,22 @@ import { columnConfig } from './column-config';
 import { useMemo } from 'react';
 import { useRoute } from '@/hooks/use-route';
 
-interface Props {
-  data: {
-    data: Playlist[];
-    meta: {
-      current_page: number;
-      per_page: number;
-      total: number;
-      last_page: number;
-    };
-  };
-  filters: {
-    search?: string;
-  };
+type PageProps = {
+  librarySupportsArtwork: boolean;
+  data: PageData;
+  filters: Filters;
 }
 
-export default function Index({ data, filters }: Props) {
+type PageData = {
+  data: Playlist[];
+  meta: PaginationMeta;
+}
+
+type Filters = {
+  search?: string;
+}
+
+export default function Index({ librarySupportsArtwork, data, filters }: PageProps) {
   const route = useRoute();
   const { meta, data: items } = data;
   const breadcrumbs: BreadcrumbItem[] = useMemo(() => [
@@ -36,8 +36,8 @@ export default function Index({ data, filters }: Props) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Playlists" />
       <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-        <DataTable<Playlist>
-          columns={columnConfig}
+        <Table<Playlist, Filters>
+          columns={columnConfig({ includeArtwork: librarySupportsArtwork })}
           data={items}
           meta={meta}
           endpoint="/playlists"

@@ -26,7 +26,9 @@ export function NavItem({ item }: NavItemProps) {
 
   const isActive = (item: MainNavItem) => {
     if (item.isActive !== undefined) return item.isActive;
-    return !!item.href && url.startsWith(resolveUrl(item.href));
+    if (!item.href) return false;
+    const itemPath = new URL(resolveUrl(item.href)).pathname;
+    return url.startsWith(itemPath);
   };
 
   const hasActiveChild = (item: MainNavItem) => {
@@ -36,8 +38,8 @@ export function NavItem({ item }: NavItemProps) {
 
   const hasChildren = item.items && item.items.length > 0;
   const itemActive = hasChildren
-      ? hasActiveChild(item)
-      : isActive(item);
+    ? hasActiveChild(item)
+    : isActive(item);
 
   const [isOpen, setIsOpen] = useState<boolean>(itemActive);
 

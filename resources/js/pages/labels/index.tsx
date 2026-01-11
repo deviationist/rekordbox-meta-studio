@@ -1,4 +1,4 @@
-import { DataTable } from '@/components/table/data-table';
+import { Table, PaginationMeta } from '@/components/table/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Label } from '@/types/rekordbox/label';
@@ -7,22 +7,22 @@ import { columnConfig } from './column-config';
 import { useMemo } from 'react';
 import { useRoute } from '@/hooks/use-route';
 
-interface Props {
-  data: {
-    data: Label[];
-    meta: {
-      current_page: number;
-      per_page: number;
-      total: number;
-      last_page: number;
-    };
-  };
-  filters: {
-    search?: string;
-  };
+type PageProps = {
+  librarySupportsArtwork: boolean;
+  data: PageData;
+  filters: Filters;
 }
 
-export default function Index({ data, filters }: Props) {
+type PageData = {
+  data: Label[];
+  meta: PaginationMeta;
+}
+
+type Filters = {
+  search?: string;
+}
+
+export default function Index({ data, filters }: PageProps) {
   const route = useRoute();
   const { meta, data: items } = data;
   const breadcrumbs: BreadcrumbItem[] = useMemo(() => [
@@ -36,7 +36,7 @@ export default function Index({ data, filters }: Props) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Labels" />
       <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-        <DataTable<Label>
+        <Table<Label, Filters>
           columns={columnConfig}
           data={items}
           meta={meta}

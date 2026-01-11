@@ -14,7 +14,7 @@ class AlbumController extends Controller
         $perPage = $request->integer('per_page', 50);
 
         $query = Album::query()
-            ->with(['artist']);
+            ->with(['artist', 'tracks']);
 
         // Apply filters
         if ($request->filled('search')) {

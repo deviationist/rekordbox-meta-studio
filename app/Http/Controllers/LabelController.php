@@ -13,7 +13,8 @@ class LabelController extends Controller
     {
         $perPage = $request->integer('per_page', 50);
 
-        $query = Label::query();
+        $query = Label::query()
+            ->with(['tracks', 'artists']);
 
         // Apply filters
         if ($request->filled('search')) {

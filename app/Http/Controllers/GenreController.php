@@ -13,7 +13,8 @@ class GenreController extends Controller
     {
         $perPage = $request->integer('per_page', 50);
 
-        $query = Genre::query();
+        $query = Genre::query()
+            ->with(['tracks', 'artists']);
 
         // Apply filters
         if ($request->filled('search')) {

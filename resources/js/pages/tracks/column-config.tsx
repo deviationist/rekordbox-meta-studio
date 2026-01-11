@@ -12,18 +12,27 @@ import { Artwork } from '@/components/table/common-columns/renderers/artwork';
 import { DateCell } from '@/components/table/common-columns/renderers/date';
 import { NamedItem } from '@/components/table/common-columns/renderers/named-item';
 import { Rating } from '@/components/table/common-columns/renderers/rating';
+import { createColumnHelper } from '@tanstack/react-table';
 
-export const columnConfig: ColumnDef<Track>[] = [
-  {
-    accessorKey: 'artworkUrl',
-    header: 'Artwork',
-    enableSorting: false,
-    size: 300,
-    meta: {
-      padding: false,
-    },
-    cell: ({ row }) => <Artwork<Track> row={row} />
-  },
+const columnHelper = createColumnHelper<Track>();
+
+type ColumnConfigProps = {
+  includeArtwork?: boolean;
+}
+
+export const columnConfig = ({ includeArtwork }: ColumnConfigProps): ColumnDef<Track>[] => [
+  ...(includeArtwork
+    ? [columnHelper.display({
+        id: 'artwork',
+        header: 'Artwork',
+        enableSorting: false,
+        size: 200,
+        meta: {
+          padding: false,
+        },
+        cell: ({ row }) => <Artwork<Track> row={row} />
+      })]
+    : []),
   {
     accessorKey: 'title',
     header: 'Track Title',

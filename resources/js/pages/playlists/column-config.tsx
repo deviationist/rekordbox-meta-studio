@@ -3,18 +3,26 @@ import { displayValue } from '@/components/table/utils';
 import { Playlist } from '@/types/rekordbox/playlist';
 import { Artwork } from '@/components/table/common-columns/renderers/artwork';
 import { dateColumns } from '@/components/table/common-columns/dates';
+import { createColumnHelper } from '@tanstack/react-table';
 
-export const columnConfig: ColumnDef<Playlist>[] = [
-  {
-    accessorKey: 'artworkUrl',
-    header: 'Artwork',
-    enableSorting: false,
-    size: 300,
-    meta: {
-      padding: false,
-    },
-    cell: ({ row }) => <Artwork<Playlist> row={row} />
-  },
+const columnHelper = createColumnHelper<Playlist>();
+type ColumnConfigProps = {
+  includeArtwork?: boolean;
+}
+
+export const columnConfig = ({ includeArtwork }: ColumnConfigProps): ColumnDef<Playlist>[] => [
+  ...(includeArtwork
+    ? [columnHelper.display({
+        id: 'artwork',
+        header: 'Artwork',
+        enableSorting: false,
+        size: 120,
+        meta: {
+          padding: false,
+        },
+        cell: ({ row }) => <Artwork<Playlist> row={row} />
+      })]
+    : []),
   {
     accessorKey: 'name',
     header: 'Playlist Name',
@@ -23,8 +31,8 @@ export const columnConfig: ColumnDef<Playlist>[] = [
   },
   {
     accessorKey: 'itemCount',
-    header: 'Song Count',
-    size: 300,
+    header: 'Track Count',
+    size: 160,
     cell: ({ row }) => displayValue(row.getValue('itemCount')),
   },
   ...dateColumns<Playlist>(),

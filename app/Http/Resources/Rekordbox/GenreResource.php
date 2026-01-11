@@ -9,6 +9,8 @@ class GenreResource extends BaseResource
         return [
             'id' => $this->ID,
             'name' => $this->Name,
+            'artistCount' => count($this->artists),
+            'trackCount' => count($this->tracks),
         ];
     }
 }

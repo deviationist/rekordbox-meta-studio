@@ -12,7 +12,7 @@ class LibraryConnectionManager
     /**
      * Configure the rekordbox connection for the given library
      */
-    public function configureConnection(Library $library): void
+    public static function configureConnection(Library $library): void
     {
         if (!$library->isDatabaseAccessible()) {
             throw new LibraryConnectionException(
@@ -55,7 +55,7 @@ class LibraryConnectionManager
     /**
      * Disconnect the rekordbox connection
      */
-    public function disconnect(): void
+    public static function disconnect(): void
     {
         DB::purge('rekordbox');
     }

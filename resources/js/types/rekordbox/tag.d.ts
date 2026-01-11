@@ -1,16 +1,14 @@
-import { RekordboxCommon } from "./common";
+import { RekordboxEntity, RekordboxCommon } from "./common";
 import { Track } from "./track";
 
-export interface Tag extends RekordboxCommon {
-  id: string;
+export type Tag = RekordboxEntity & RekordboxCommon & {
   sequence: number;
   name: string;
   attribute: number;
   parentId: string;
 }
 
-export interface TagItem extends RekordboxCommon {
-  id: string;
+export type TagItem = RekordboxEntity & RekordboxCommon & {
   tag: Tag;
   track: Track;
   trackNumber: string;

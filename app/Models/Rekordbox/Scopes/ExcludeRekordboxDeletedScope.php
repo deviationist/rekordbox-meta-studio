@@ -8,10 +8,18 @@ use Illuminate\Database\Eloquent\Scope;
 
 class ExcludeRekordboxDeletedScope implements Scope
 {
+    /**
+     * Apply the scope to a given Eloquent query builder.
+     *
+     * @param  Builder<Model>  $builder
+     * @param  Model  $model
+     */
     public function apply(Builder $builder, Model $model): void
     {
-        $builder->where('rb_data_status', 0)
-                ->where('rb_local_data_status', 0)
-                ->where('rb_local_deleted', 0);
+        $table = $model->getTable();
+
+        $builder->where("{$table}.rb_data_status", 0)
+                ->where("{$table}.rb_local_data_status", 0)
+                ->where("{$table}.rb_local_deleted", 0);
     }
 }

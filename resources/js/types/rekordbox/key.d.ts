@@ -1,7 +1,6 @@
-import { RekordboxCommon } from "./common";
+import { RekordboxEntity, RekordboxCommon } from "./common";
 
-export interface Key extends RekordboxCommon {
-  id: string;
+export type Key = RekordboxEntity & RekordboxCommon & {
   scaleName: string;
   sequence: number;
 }

@@ -2,13 +2,14 @@
 
 namespace App\Models\Rekordbox;
 
+use App\Models\Traits\HasArtistSplitting;
 use App\Models\Traits\HasReadonlyTimestamps;
 use App\Models\Traits\HasRekordboxDeletion;
 use Illuminate\Database\Eloquent\Model;
 
 class Artist extends Model
 {
-    use HasReadonlyTimestamps, HasRekordboxDeletion;
+    use HasReadonlyTimestamps, HasRekordboxDeletion, HasArtistSplitting;
 
     protected $connection = 'rekordbox';
     protected $table = 'djmdArtist';

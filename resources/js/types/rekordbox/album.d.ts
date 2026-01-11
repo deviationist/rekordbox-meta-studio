@@ -1,8 +1,7 @@
 import { Artist } from "./artist";
-import { RekordboxCommon } from "./common";
+import { RekordboxEntity, RekordboxCommon } from "./common";
 
-export interface Album extends RekordboxCommon {
-  id: string;
+export type Album = RekordboxEntity & RekordboxCommon & {
   name: string;
   artist: Artist;
   imagePath: string;

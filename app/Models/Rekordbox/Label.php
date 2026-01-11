@@ -5,6 +5,8 @@ namespace App\Models\Rekordbox;
 use App\Models\Traits\HasReadonlyTimestamps;
 use App\Models\Traits\HasRekordboxDeletion;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Label extends Model
 {
@@ -14,4 +16,21 @@ class Label extends Model
     protected $table = 'djmdLabel';
     protected $primaryKey = 'ID';
     public $timestamps = false;
+
+    public function tracks(): HasMany
+    {
+        return $this->hasMany(Track::class, 'LabelID', 'ID');
+    }
+
+    public function artists(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            Artist::class,
+            Track::class,
+            'LabelID',
+            'ID',
+            'ID',
+            'ArtistId',
+        );
+    }
 }

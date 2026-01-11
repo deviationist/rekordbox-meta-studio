@@ -1,14 +1,13 @@
 import { Album } from "./album"
 import { Artist } from "./artist"
-import { RekordboxCommon } from "./common"
+import { RekordboxEntity, RekordboxArtwork, RekordboxCommon } from "./common"
 import { type FileType } from "./file-type"
 import { Genre } from "./genre"
 import { Key } from "./key"
 import { Label } from "./label"
 import { Tag } from "./tag"
 
-export interface Track extends RekordboxCommon {
-  id: string;
+export type Track = RekordboxEntity & RekordboxCommon & RekordboxArtwork & {
   filePath: string;
   fileName: string;
   title: string;
@@ -31,7 +30,7 @@ export interface Track extends RekordboxCommon {
   stockDate: string; // Should be cast to Date?
   //colorId: string;
   playCount: number;
-  artworkUrl: string;
+  //artworkUrl: string;
   //imagePath: string;
   //masterDbId: string;
   //masterSongId: string;

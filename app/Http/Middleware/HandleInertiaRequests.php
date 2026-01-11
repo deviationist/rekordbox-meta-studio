@@ -6,6 +6,7 @@ use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use App\Models\Library;
+use App\Services\EntityCountService;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -17,6 +18,10 @@ class HandleInertiaRequests extends Middleware
      * @var string
      */
     protected $rootView = 'app';
+
+    public function __construct(
+        protected EntityCountService $entityCountService
+    ) {}
 
     /**
      * Determines the current asset version.
@@ -30,14 +35,7 @@ class HandleInertiaRequests extends Middleware
 
     public function entityCount()
     {
-        return [
-            'tracks' => \App\Models\Rekordbox\Track::count(),
-            'playlists' => \App\Models\Rekordbox\Playlist::count(),
-            'artists' => \App\Models\Rekordbox\Artist::count(),
-            'albums' => \App\Models\Rekordbox\Album::count(),
-            'genres' => \App\Models\Rekordbox\Genre::count(),
-            'labels' => \App\Models\Rekordbox\Label::count(),
-        ];
+        return $this->entityCountService->getCounts();
     }
 
     /**
@@ -68,10 +66,10 @@ class HandleInertiaRequests extends Middleware
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
             'defaultLibrary' => fn () => $request->user()
-                ? Library::forUser($request->user()->id)->getDefault()?->id
+                ? $request->user()->libraries()->getDefault()?->id
                 : null,
             'userLibraries' => fn () => $request->user()
-                ? Library::forUser($request->user()->id)->get(['id', 'name'])
+                ? $request->user()->libraries()->get(['id', 'name'])
                 : null,
         ];
     }

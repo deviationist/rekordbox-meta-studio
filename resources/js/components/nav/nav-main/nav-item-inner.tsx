@@ -1,8 +1,9 @@
-import { EntityCount, SharedData } from '@/types';
+//import { EntityCount, SharedData } from '@/types';
 import { type MainNavItem } from '@/types';
-import { usePage } from '@inertiajs/react';
-import { ChevronRight } from 'lucide-react';
+//import { usePage } from '@inertiajs/react';
+import { ChevronRight, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useEntityCount } from '@/hooks/use-entity-count';
 
 type NavItemInnerProps = {
   itemActive?: boolean;
@@ -10,16 +11,23 @@ type NavItemInnerProps = {
 };
 
 export function CountBadge({ item, itemActive = false }: NavItemInnerProps) {
-  const { props } = usePage<SharedData>();
-  const count = item?.key && props.entityCount ? props.entityCount[item.key as keyof EntityCount] ?? null : null;
-  if (count) {
-    return (
-      <Badge variant={itemActive ?  "default" : "outline"} className="ml-auto px-1.5 text-xs">
-        {count}
-      </Badge>
-    );
+  const entityCount = useEntityCount();
+  const count = entityCount.get(item?.key)
+  if (!count && !entityCount.isLoading) {
+    return <></>;
   }
-  return <></>;
+  return (
+    <Badge
+      variant={itemActive ? "default" : "outline"}
+      className="ml-auto px-1.5 text-xs"
+    >
+      {entityCount.isLoading ? (
+        <Loader2 className="h-3 w-3 animate-spin" />
+      ) : (
+        count
+      )}
+    </Badge>
+  );
 }
 
 export function NavItemInner({ item, itemActive = false }: NavItemInnerProps) {
@@ -29,7 +37,7 @@ export function NavItemInner({ item, itemActive = false }: NavItemInnerProps) {
       {item.icon && <item.icon />}
       <span>{item.title}</span>
       <div className="ml-auto">
-        <CountBadge item={item} itemActive={itemActive} />
+        {item.displayCount && <CountBadge item={item} itemActive={itemActive} />}
         {hasChildren && <ChevronRight className="h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />}
       </div>
     </>

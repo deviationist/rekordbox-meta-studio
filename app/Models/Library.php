@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Services\LibraryConnectionManager;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Crypt;
 
@@ -42,6 +46,11 @@ class Library extends Model
         return $query->orderBy('name', 'asc')->first();
     }
 
+    public function configureRekordboxConnection(): void
+    {
+        LibraryConnectionManager::configureConnection($this);
+    }
+
     protected static function boot()
     {
         parent::boot();
@@ -68,6 +77,37 @@ class Library extends Model
         }
 
         throw new \RuntimeException("Library {$this->name} has no database file configured.");
+    }
+
+    // Query scope for artwork-capable libraries
+    public function scopeWithArtworkSupport($query)
+    {
+        return $query->where('is_rekordbox_folder', true);
+    }
+
+    // Explicit check method
+    public function supportsArtwork(): bool
+    {
+        return $this->is_rekordbox_folder === true;
+    }
+
+    // Path builder with null safety
+    public function getArtworkBasePath(): ?string
+    {
+        if (!$this->supportsArtwork()) {
+            return null;
+        }
+
+        $libraryDir = dirname($this->file_path);
+        return Arr::join([$libraryDir, 'share', 'PIONEER', 'Artwork'], DIRECTORY_SEPARATOR);
+    }
+
+    // Optional: Attribute accessor for cleaner access
+    protected function artworkBasePath(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getArtworkBasePath(),
+        );
     }
 
     /**
@@ -112,19 +152,16 @@ class Library extends Model
         }
     }
 
-    /**
-     * Relationship: Library belongs to a user
-     */
-    public function user()
+    public function artistSplits(): HasMany
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(ArtistSplit::class, 'id', 'library_id');
     }
 
     /**
-     * Scope: Only libraries for the authenticated user
+     * Relationship: Library belongs to a user
      */
-    public function scopeForUser($query, $userId)
+    public function user(): BelongsTo
     {
-        return $query->where('user_id', $userId);
+        return $this->belongsTo(User::class);
     }
 }

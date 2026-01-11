@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\HasArtwork;
 use App\Http\Resources\Rekordbox\TrackResource;
 use App\Models\Library;
 use App\Models\Rekordbox\Track;
@@ -10,6 +11,8 @@ use Inertia\Response;
 
 class TrackController extends Controller
 {
+    use HasArtwork;
+
     public function index(Request $request, Library $library): Response
     {
         $perPage = $request->integer('per_page', 50);
@@ -55,6 +58,7 @@ class TrackController extends Controller
         $tracks = $query->paginate($perPage);
 
         return inertia('tracks/index', [
+            'librarySupportsArtwork' => $library->supportsArtwork(),
             'data' => TrackResource::collection($tracks),
             'filters' => [
                 'search' => $request->string('search', ''),
@@ -67,7 +71,15 @@ class TrackController extends Controller
         ]);
     }
 
-    public function show(Track $track)
+    public function artwork(Request $request, Library $library, Track $track)
+    {
+        return $this->resolveArtwork(
+            $library,
+            $track->getArtworkPath($request->query('size')),
+        );
+    }
+
+    public function show(Library $library, Track $track)
     {
         $track->load(['artist', 'album', 'genre']);
 

@@ -13,7 +13,7 @@ export const columnConfig: ColumnDef<Album>[] = [
   {
     accessorKey: 'trackCount',
     header: 'Track Count',
-    size: 300,
+    size: 160,
     cell: ({ row }) => displayValue(row.getValue('trackCount')),
   },
   ...dateColumns<Album>(),

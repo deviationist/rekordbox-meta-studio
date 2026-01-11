@@ -1,12 +1,14 @@
+import { useRoute } from "@/hooks/use-route";
+import { RekordboxEntity, RekordboxArtwork } from "@/types/rekordbox/common";
 import { Row } from "@tanstack/react-table";
 
-export function Artwork<Type>({ key = 'artworkUrl', row }: { key?: string; row: Row<Type>}) {
-  const value = row.getValue(key) as string;
+export function Artwork<Type extends RekordboxArtwork & RekordboxEntity>({ row }: { row: Row<Type>}) {
+  const route = useRoute();
   return (
     <div className="overflow-hidden w-full h-[30px] bg-muted/50">
-      {value ? (
+      {row.original.hasArtwork ? (
         <img
-          src={value}
+          src={route('library.tracks.artwork.show', { size: 'm', library: 'c0b67651-f91b-4e9b-a2e7-a4abf925c1ff', track: row.original.id })}
           alt="Album artwork"
           className="w-full h-full object-cover object-top"
         />

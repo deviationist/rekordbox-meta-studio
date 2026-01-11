@@ -6,25 +6,48 @@ use App\Models\Library;
 use App\Http\Requests\StoreLibraryRequest;
 use App\Http\Requests\UpdateLibraryRequest;
 use App\Http\Resources\LibraryResource;
+use App\Services\CurrentLibrary;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class LibraryController extends Controller
 {
     use AuthorizesRequests;
 
+    private $defaultLibraryRoute = 'library.tracks.index';
+
+    public function __construct(
+        private readonly CurrentLibrary $currentLibrary
+    ) {}
+
     /**
      * Display a listing of the user's libraries.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $libraries = Library::forUser(Auth::id())->get();
+        $libraries = $request->user()->libraries;
 
         return Inertia::render('libraries/index', [
             'libraries' => LibraryResource::collection($libraries),
         ]);
+    }
+
+    public function redirectToDefaultLibrary()
+    {
+        $library = Library::getDefault();
+        if (!$library) {
+            return abort(404);
+        }
+        return $this->redirectToDefaultLibraryRoute($library);
+
+    }
+
+    public function redirectToDefaultLibraryRoute(Library $library)
+    {
+        return redirect()->route($this->defaultLibraryRoute, compact('library'));
     }
 
     /**
@@ -122,16 +145,18 @@ class LibraryController extends Controller
     /**
      * Show library selector page
      */
-    public function select()
+    public function select(Request $request)
     {
-        $libraries = Library::forUser(Auth::id())->get();
+        $libraries = $request->user()->libraries;
 
         if ($libraries->count() === 1) {
             return redirect()->route('library.tracks', ['library' => $libraries->first()]);
         }
 
         return Inertia::render('libraries/select', [
-            'libraries' => LibraryResource::collection($libraries),
+            'data' => [
+                'libraries' => LibraryResource::collection($libraries)->resolve(),
+            ]
         ]);
     }
 }

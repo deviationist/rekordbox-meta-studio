@@ -1,7 +1,6 @@
-import { RekordboxCommon } from "./common";
+import { RekordboxEntity, RekordboxCommon } from "./common";
 
-export interface Artist extends RekordboxCommon {
-  id: string;
+export type Artist = RekordboxEntity & RekordboxCommon & {
   name: string;
   //searchString: string;
   trackCount: number;

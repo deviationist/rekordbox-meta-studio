@@ -3,7 +3,6 @@
 namespace App\Models\Traits;
 
 use App\Models\Rekordbox\Scopes\ExcludeRekordboxDeletedScope;
-
 use Illuminate\Database\Eloquent\Builder;
 
 trait HasRekordboxDeletion
@@ -21,11 +20,13 @@ trait HasRekordboxDeletion
      */
     public function scopeOnlyDeleted(Builder $query): Builder
     {
+        $table = $query->getModel()->getTable();
+
         return $query->withoutGlobalScope(ExcludeRekordboxDeletedScope::class)
-                     ->where(function ($q) {
-                         $q->where('rb_data_status', '!=', 0)
-                           ->orWhere('rb_local_data_status', '!=', 0)
-                           ->orWhere('rb_local_deleted', '!=', 0);
+                     ->where(function ($q) use ($table) {
+                         $q->where("{$table}.rb_data_status", '!=', 0)
+                           ->orWhere("{$table}.rb_local_data_status", '!=', 0)
+                           ->orWhere("{$table}.rb_local_deleted", '!=', 0);
                      });
     }
 

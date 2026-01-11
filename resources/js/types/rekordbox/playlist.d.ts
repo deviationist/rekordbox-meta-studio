@@ -1,11 +1,10 @@
-import { RekordboxCommon } from "./common";
+import { RekordboxEntity, RekordboxArtwork, RekordboxCommon } from "./common";
 import { Track } from "./track";
 
-export interface Playlist extends RekordboxCommon {
-  id: string;
+export type Playlist = RekordboxEntity & RekordboxCommon & RekordboxArtwork & {
   sequence: number;
   name: string;
-  artworkUrl: string;
+  //artworkUrl: string;
   //imagePath: string;
   itemCount: number;
   attribute: number;
@@ -13,7 +12,7 @@ export interface Playlist extends RekordboxCommon {
   smartList: string;
 }
 
-export interface PlaylistItem extends RekordboxCommon {
+export type PlaylistItem = RekordboxCommon & {
   id: string;
   playlist: Playlist;
   track: Track;

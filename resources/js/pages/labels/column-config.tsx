@@ -10,11 +10,17 @@ export const columnConfig: ColumnDef<Label>[] = [
     size: 300,
     cell: ({ row }) => displayValue(row.getValue('name')),
   },
-  /*{
+  {
+    accessorKey: 'artistCount',
+    header: 'Artist Count',
+    size: 160,
+    cell: ({ row }) => displayValue(row.getValue('artistCount')),
+  },
+  {
     accessorKey: 'trackCount',
     header: 'Track Count',
-    size: 300,
+    size: 160,
     cell: ({ row }) => displayValue(row.getValue('trackCount')),
-  },*/
+  },
   ...dateColumns<Label>(),
 ];

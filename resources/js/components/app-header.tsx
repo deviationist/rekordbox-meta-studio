@@ -29,7 +29,6 @@ import {
 import { UserMenuContent } from '@/components/user-menu-content';
 import { useInitials } from '@/hooks/use-initials';
 import { cn, isSameUrl, resolveUrl } from '@/lib/utils';
-import { dashboard } from '@/routes';
 import { type BreadcrumbItem, type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid, Menu, Search } from 'lucide-react';
@@ -142,7 +141,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
           </div>
 
           <Link
-            href={dashboard.index()}
+            href={route('dashboard.index')}
             prefetch
             className="flex items-center space-x-2"
           >
@@ -246,7 +245,7 @@ export function AppHeader({ breadcrumbs = [] }: AppHeaderProps) {
                     </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-56" align="end">
-                    <UserMenuContent user={auth.user} />
+                  <UserMenuContent user={auth.user} />
                 </DropdownMenuContent>
             </DropdownMenu>
           </div>

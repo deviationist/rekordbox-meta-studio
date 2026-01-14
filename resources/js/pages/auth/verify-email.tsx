@@ -2,9 +2,9 @@
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
-import { useRoute } from '@/hooks/use-route';
 import AuthLayout from '@/layouts/auth-layout';
 import { Form, Head } from '@inertiajs/react';
+import { useRoute } from 'ziggy-js';
 
 export default function VerifyEmail({ status }: { status?: string }) {
   const route = useRoute();

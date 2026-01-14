@@ -5,14 +5,14 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { useRoute } from '@/hooks/use-route';
+import { useRoute } from 'ziggy-js';
 import AuthLayout from '@/layouts/auth-layout';
 import { Form, Head } from '@inertiajs/react';
 
 interface LoginProps {
-    status?: string;
-    canResetPassword: boolean;
-    canRegister: boolean;
+  status?: string;
+  canResetPassword: boolean;
+  canRegister: boolean;
 }
 
 export default function Login({

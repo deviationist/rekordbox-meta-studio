@@ -52,7 +52,6 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'name' => config('app.name'),
-            'quote' => ['message' => trim($message), 'author' => trim($author)],
             'entityCount' => function () use ($request) {
                 try {
                     return $this->entityCount();

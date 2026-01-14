@@ -31,24 +31,20 @@ createInertiaApp({
   title: (title) => (title ? `${title} - ${appName}` : appName),
   resolve: (name) =>
     resolvePageComponent(
-      `./Pages/${name}.tsx`,
-      import.meta.glob('./Pages/**/*.tsx')
+      `./pages/${name}.tsx`,
+      import.meta.glob('./pages/**/*.tsx')
     ).then((module) => {
       const page = module as PageModule;
-
-      // Add default layout if none exists
-      if (!page.default.layout) {
+      if (!name.startsWith('auth/')) {
         page.default.layout = (children: ReactNode) => (
           <LibraryProvider>{children}</LibraryProvider>
         );
       }
-
       return page;
     }),
 
   setup({ el, App, props }) {
     const root = createRoot(el);
-
 
     root.render(
       <StrictMode>

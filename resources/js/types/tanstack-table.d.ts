@@ -5,7 +5,7 @@ declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
     columnOverflow: boolean;
     currentSort: ColumnSort | null;
-    toggleSort: (columnId: string) => void;
+    //toggleSort: (columnId: string) => void;
   }
 
   // eslint-disable-next-line

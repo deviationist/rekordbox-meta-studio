@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Crypt;
@@ -21,6 +22,7 @@ class Library extends Model
 
     public $incrementing = false;
     protected $keyType = 'string';
+    protected bool $connectionConfigured = false;
 
     protected $fillable = [
         'user_id',
@@ -49,7 +51,17 @@ class Library extends Model
 
     public function configureRekordboxConnection(): Connection
     {
-        return LibraryConnectionManager::configureConnection($this);
+        // If already configured for this instance, return existing connection
+        if ($this->connectionConfigured) {
+            return DB::connection('rekordbox');
+        }
+
+        $connection = LibraryConnectionManager::configureConnection($this);
+
+        // Mark this instance as configured
+        $this->connectionConfigured = true;
+
+        return $connection;
     }
 
     protected static function boot()

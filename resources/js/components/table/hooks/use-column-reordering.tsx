@@ -1,8 +1,8 @@
 import { Table } from "@tanstack/react-table";
-import { ColumnSetStateCallbacks } from "../hooks/use-table-state";
+import { ColumnSetStateCallbacks } from "./use-column-state";
 import { Direction } from "./use-column-dnd-reordering";
 
-export function useColumnReordering<TData,>(table: Table<TData>, setState: ColumnSetStateCallbacks) {
+export function useColumnReordering<TData>(table: Table<TData>, setState: ColumnSetStateCallbacks) {
 
   // Helper function to build current column order
   const buildCurrentColumnOrder = (savedOrder: string[], allColumnIds: string[]): string[] => {

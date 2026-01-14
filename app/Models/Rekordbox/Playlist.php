@@ -2,25 +2,34 @@
 
 namespace App\Models\Rekordbox;
 
-use App\Models\Traits\HasReadonlyTimestamps;
 use App\Models\Traits\HasRekordboxArtwork;
-use App\Models\Traits\HasRekordboxDeletion;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Playlist extends Model
+class Playlist extends BaseModel
 {
-    use HasReadonlyTimestamps, HasRekordboxDeletion, HasRekordboxArtwork;
+    use HasRekordboxArtwork;
 
-    protected $connection = 'rekordbox';
     protected $table = 'djmdPlaylist';
     protected $primaryKey = 'ID';
-    public $timestamps = false;
 
     public function items(): HasMany
     {
         return $this->hasMany(PlaylistItem::class, 'PlaylistID', 'ID');
+    }
+
+    public function getArtworkMeta($size = 'm')
+    {
+        if (!$this->hasArtwork()) {
+            return false;
+        }
+        $library = $this->library;
+        return [
+            'title' => '',
+            'alt' => '',
+            'src' => route('library.playlists.artwork.show', ['size' => $size, 'library' => $library, 'track' => $this]),
+            'src_original' => route('library.playlists.artwork.show', ['size' => $size, 'library' => $library, 'track' => $this]),
+        ];
     }
 
     public function tracks(): HasManyThrough

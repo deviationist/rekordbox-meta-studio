@@ -1,9 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { PageProps } from '@inertiajs/core'
+import { JSX } from 'react';
 
 export type PaginationMeta = {
   current_page: number;
-  per_page: number;
   total: number;
   last_page: number;
 }
@@ -20,7 +20,7 @@ export type TableProps<TData, TFilter> = {
   data: TData[];
   meta: PaginationMeta;
   endpoint: string;
-  filterMarkup?: React.ReactNode;
+  filterComponents?: Array<React.ComponentType | JSX.Element>;
   filters?: TFilter;
   storageKey?: string;
 }

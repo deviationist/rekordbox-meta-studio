@@ -1,6 +1,8 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { Button } from "./button"
+import { X } from "lucide-react"
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
@@ -18,4 +20,57 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   )
 }
 
-export { Input }
+interface InputWithCrossProps extends React.ComponentProps<"input"> {
+  containerClassName?: string
+  onClear?: () => void
+}
+
+function InputWithCross({
+  className,
+  containerClassName,
+  type,
+  value,
+  onChange,
+  onClear,
+  ...props
+}: InputWithCrossProps) {
+  const handleClear = () => {
+    if (onClear) {
+      onClear()
+    } else if (onChange) {
+      // Create a synthetic event for controlled inputs
+      const syntheticEvent = {
+        target: { value: '' },
+        currentTarget: { value: '' },
+      } as React.ChangeEvent<HTMLInputElement>
+      onChange(syntheticEvent)
+    }
+  }
+
+  return (
+    <div className={cn("relative", containerClassName)}>
+      <Input
+        type={type}
+        className={cn("pr-10", className)}
+        value={value}
+        onChange={onChange}
+        {...props}
+      />
+      {value && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          className="absolute cursor-pointer right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+          onClick={handleClear}
+          tabIndex={-1}
+        >
+          <X className="h-4 w-4" />
+          <span className="sr-only">Clear</span>
+        </Button>
+      )}
+    </div>
+  )
+}
+
+export { Input, InputWithCross }

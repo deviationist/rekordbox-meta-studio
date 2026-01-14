@@ -6,24 +6,19 @@ use Carbon\CarbonInterval;
 use App\Casts\OnOffBoolean;
 use App\Enums\Rekordbox\FileType;
 use App\Models\Rekordbox\Scopes\ExcludeStreamingFilesScope;
-use App\Models\Traits\HasReadonlyTimestamps;
 use App\Models\Traits\HasRekordboxArtwork;
-use App\Models\Traits\HasRekordboxDeletion;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Track extends Model
+class Track extends BaseModel
 {
-    use HasReadonlyTimestamps, HasRekordboxDeletion, HasRekordboxArtwork;
+    use HasRekordboxArtwork;
 
-    protected $connection = 'rekordbox';
     protected $table = 'djmdContent';
     protected $primaryKey = 'ID';
     protected $appends = ['file_type_label'];
-    public $timestamps = false;
 
     protected static function booted()
     {
@@ -55,6 +50,20 @@ class Track extends Model
                 ->cascade()
                 ->format($this->Length >= 3600 ? '%H:%I:%S' : '%I:%S');
         });
+    }
+
+    public function getArtworkMeta($size = 'm')
+    {
+        if (!$this->hasArtwork()) {
+            return false;
+        }
+        $library = $this->library;
+        return [
+            'title' => '',
+            'alt' => '',
+            'src' => route('library.tracks.artwork.show', ['size' => $size, 'library' => $library, 'track' => $this]),
+            'src_original' => route('library.tracks.artwork.show', ['size' => $size, 'library' => $library, 'track' => $this]),
+        ];
     }
 
     // Relationships

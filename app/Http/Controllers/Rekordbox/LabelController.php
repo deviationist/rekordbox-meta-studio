@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Rekordbox;
 
 use App\Http\Resources\Rekordbox\LabelResource;
 use App\Models\Rekordbox\Label;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
-class LabelController extends Controller
+class LabelController extends BaseController
 {
     public function index(Request $request): Response
     {
-        $perPage = $request->integer('per_page', 50);
-
         $query = Label::query()
             ->with(['tracks', 'artists']);
 
@@ -29,7 +27,7 @@ class LabelController extends Controller
         $sortDir = $request->string('sort_dir', 'asc');
         $query->orderBy($sortBy, $sortDir);
 
-        $labels = $query->paginate($perPage);
+        $labels = $query->paginate(self::DEFAULT_PER_PAGE);
 
         return inertia('labels/index', [
             'data' => LabelResource::collection($labels),

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -7,19 +7,22 @@ import {
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { router } from '@inertiajs/react';
 import { Page } from '@inertiajs/core'
-
 import { useQueryState, parseAsString, parseAsInteger } from 'nuqs';
-import { useTableState } from './hooks/use-table-state';
+import { UseColumnState, useColumnState } from './hooks/use-column-state';
 import { TableToolbar } from './table-toolbar/table-toolbar';
 import { TableHeader } from './table-header/table-header';
 import { useTableGridColumns } from './hooks/use-table-grid-columns';
 import { useDetectColumnsOverflow } from './hooks/use-detect-columns-overflow';
 import { TableBody } from './table-body/table-body';
-
 import type { GenericFilters, GenericPageProps, TableProps, PaginationMeta } from './types';
-import { useTableSorting } from './hooks/use-table-sorting';
+import { UseSortingState, useSortingState } from './hooks/use-sorting-state';
 
 export { PaginationMeta };
+
+export type TableState = {
+  sortingState: UseSortingState;
+  columnState: UseColumnState;
+};
 
 export function Table<
   TData,
@@ -30,12 +33,12 @@ export function Table<
   meta,
   endpoint,
   filters = {} as TFilter,
-  filterMarkup,
+  filterComponents,
   storageKey = 'table-state',
 }: TableProps<TData, Partial<TFilter>>) {
   const tableContainerRef = useRef<HTMLDivElement>(null);
 
-  const [search, setSearch] = useQueryState('search', parseAsString.withDefault(''));
+  const [search] = useQueryState('search', parseAsString.withDefault(''));
   const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1));
 
   const [columnOverflow, setColumnOverflow] = useState<boolean>(false);
@@ -44,28 +47,27 @@ export function Table<
   const [currentMeta, setCurrentMeta] = useState<PaginationMeta>(meta);
   const [hasMore, setHasMore] = useState<boolean>(meta.current_page < meta.last_page);
 
-  const tableState = useTableState({ storageKey });
+  // Column state
+  const columnState = useColumnState({ storageKey });
   const {
     columnOrder,
     columnVisibility,
     columnSizing,
     columnPinning,
-    setState,
-    resetState,
-  } = tableState;
+    setState: setColumnState,
+  } = columnState;
 
-  const { currentSort, toggleSort } = useTableSorting(
-    { id: 'title', desc: false },
-    () => {
-      //fetchData(true)
-    },
-  );
+  // Sorting
+  const tableSorting = useSortingState();
+  const { sortingState: sorting, currentSort, setSorting } = tableSorting;
+
+  const tableState = { sortingState: tableSorting, columnState };
 
   const table = useReactTable({
     data: allData,
     columns,
     state: {
-      //sorting,
+      sorting,
       columnOrder,
       columnVisibility,
       columnSizing,
@@ -74,16 +76,17 @@ export function Table<
     meta: {
       columnOverflow,
       currentSort,
-      toggleSort,
     },
-    //onSortingChange: setSorting,
-    onColumnOrderChange: setState.columnOrder,
-    onColumnVisibilityChange: setState.columnVisibility,
-    onColumnSizingChange: setState.columnSizing,
+    onSortingChange: setSorting,
+    onColumnOrderChange: setColumnState.columnOrder,
+    onColumnVisibilityChange: setColumnState.columnVisibility,
+    onColumnSizingChange: setColumnState.columnSizing,
     getCoreRowModel: getCoreRowModel(),
-    //getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    manualPagination: false,
     manualSorting: true,
+    enableSorting: true,
+    enableSortingRemoval: true,
     columnResizeMode: 'onChange',
     enableColumnResizing: true,
   });
@@ -106,25 +109,38 @@ export function Table<
     onChange: setColumnOverflow,
   });
 
+  const query = useMemo(() => {
+    const query: Record<string, string | number> = {};
+    if (currentSort) {
+      query.sort_by = currentSort.id;
+      query.sort_order = currentSort.desc ? 'desc' : 'asc';
+    }
+    if (page) {
+      query.page = page;
+    }
+    if (search) {
+      query.search = search;
+    }
+    return query;
+  }, [search, page, currentSort]);
+
   // Infinite scroll handler
   const loadMore = useCallback(() => {
     if (isLoading || !hasMore) return;
 
     setIsLoading(true);
-    const nextPage = currentMeta.current_page + 1;
-    setPage(nextPage);
+    setPage(currentMeta.current_page + 1);
 
     router.get(
       endpoint,
-      { ...filters, page: nextPage, per_page: currentMeta.per_page },
+      query,
       {
         preserveState: true,
         preserveScroll: true,
         only: ['data', 'meta'],
         onSuccess: (page) => {
-          const props = page.props as Page<GenericPageProps<TData>>["props"];
+          const props = page.props.data as Page<GenericPageProps<TData>>["props"];
           const newData = props.data || [];
-          console.log("newData", newData);
           const newMeta = props.meta || currentMeta;
 
           setAllData(prev => [...prev, ...newData]);
@@ -137,7 +153,7 @@ export function Table<
         },
       }
     );
-  }, [currentMeta, setPage, endpoint, filters, hasMore, isLoading]);
+  }, [currentMeta, query, setPage, endpoint, hasMore, isLoading]);
 
   // Detect scroll near bottom
   useEffect(() => {
@@ -161,16 +177,17 @@ export function Table<
   return (
     <div className="space-y-4">
       <TableToolbar<TData>
-        filterMarkup={filterMarkup}
         allData={allData}
         currentMeta={currentMeta}
-        tableState={table.getState()}
+        tableState={tableState}
         table={table}
-        resetState={resetState}
+        filterComponents={filterComponents}
       />
 
       <p>Search: {search}</p>
       <p>Page: {page}</p>
+      <p>Sort: {JSON.stringify(sorting)}</p>
+      <p>Query: {JSON.stringify(query)}</p>
 
       <div
         ref={tableContainerRef}

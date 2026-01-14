@@ -1,22 +1,22 @@
-import { ColumnDef } from '@tanstack/react-table';
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { displayValue } from '@/components/table/utils';
 import { Playlist } from '@/types/rekordbox/playlist';
 import { Artwork } from '@/components/table/common-columns/renderers/artwork';
 import { dateColumns } from '@/components/table/common-columns/dates';
-import { createColumnHelper } from '@tanstack/react-table';
 
 const columnHelper = createColumnHelper<Playlist>();
+
 type ColumnConfigProps = {
   includeArtwork?: boolean;
 }
 
 export const columnConfig = ({ includeArtwork }: ColumnConfigProps): ColumnDef<Playlist>[] => [
-  ...(includeArtwork
+ ...(includeArtwork
     ? [columnHelper.display({
         id: 'artwork',
         header: 'Artwork',
         enableSorting: false,
-        size: 120,
+        size: 200,
         meta: {
           padding: false,
         },

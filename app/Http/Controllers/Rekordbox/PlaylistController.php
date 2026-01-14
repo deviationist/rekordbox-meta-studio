@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Rekordbox;
 
 use App\Http\Controllers\Traits\HasArtwork;
 use App\Http\Resources\Rekordbox\PlaylistResource;
@@ -9,14 +9,12 @@ use App\Models\Rekordbox\Playlist;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
-class PlaylistController extends Controller
+class PlaylistController extends BaseController
 {
     use HasArtwork;
 
     public function index(Request $request): Response
     {
-        $perPage = $request->integer('per_page', 50);
-
         $query = Playlist::query()
             ->with(['items']);
 
@@ -33,7 +31,7 @@ class PlaylistController extends Controller
         $sortDir = $request->string('sort_dir', 'asc');
         $query->orderBy($sortBy, $sortDir);
 
-        $playlists = $query->paginate($perPage);
+        $playlists = $query->paginate(self::DEFAULT_PER_PAGE);
 
         return inertia('playlists/index', [
             'data' => PlaylistResource::collection($playlists),

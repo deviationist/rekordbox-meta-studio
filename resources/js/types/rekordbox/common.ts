@@ -10,10 +10,6 @@ export type RekordboxCommon = {
   updatedAt: string; // Should be cast to Date?
 }
 
-export type RekordboxArtwork = {
-  hasArtwork: boolean;
-}
-
 export type RekordboxEntity = {
   id: string;
 }

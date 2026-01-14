@@ -2,20 +2,13 @@
 
 namespace App\Models\Rekordbox;
 
-use App\Models\Traits\HasReadonlyTimestamps;
-use App\Models\Traits\HasRekordboxDeletion;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
-class Label extends Model
+class Label extends BaseModel
 {
-    use HasReadonlyTimestamps, HasRekordboxDeletion;
-
-    protected $connection = 'rekordbox';
     protected $table = 'djmdLabel';
     protected $primaryKey = 'ID';
-    public $timestamps = false;
 
     public function tracks(): HasMany
     {

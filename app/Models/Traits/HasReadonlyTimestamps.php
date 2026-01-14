@@ -4,6 +4,8 @@ namespace App\Models\Traits;
 
 trait HasReadonlyTimestamps
 {
+    public $timestamps = false;
+
     public function initializeHasReadonlyTimestamps(): void
     {
         $this->casts = array_merge($this->casts, [

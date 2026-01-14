@@ -11,7 +11,7 @@ export type UseColumnDndProps<TData> = {
   columnReorderCallback: (draggedColumnId: string, targetColumnId: string, side: Direction) => void;
 }
 
-export function useColumnDndReordering<TData,>({
+export function useColumnDndReordering<TData>({
   dragState,
   dragHandleRef,
   table,
@@ -114,7 +114,7 @@ type useSideResolverProps<TData> = {
   column: Column<TData, unknown>;
 }
 
-function useSideResolver<TData,>({ table, column }: useSideResolverProps<TData>) {
+function useSideResolver<TData>({ table, column }: useSideResolverProps<TData>) {
   const { isNextColumn, isPrevColumn } = useMemo(() => {
     const getColumnIndices = (sourceDraggedColumnId: string | null) => {
       if (!sourceDraggedColumnId) return null;

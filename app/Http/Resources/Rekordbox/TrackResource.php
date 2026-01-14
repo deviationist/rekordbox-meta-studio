@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Rekordbox;
 
+
+
 class TrackResource extends BaseResource
 {
     protected function additionalFields(): array
@@ -30,7 +32,7 @@ class TrackResource extends BaseResource
             'stockDate' => $this->StockDate,
             //'colorId' => $this->ColorID,
             'playCount' => $this->DJPlayCount,
-            'hasArtwork' => $this->hasArtwork(),
+            'artwork' => $this->hasArtwork() ? ArtworkMetaResource::make($this->getArtworkMeta())->resolve() : null,
             //'artworkUrl' => $this->getArtworkUrl('m'),
             //'imagePath' => $this->ImagePath,
             //'masterDbId' => $this->MasterDBID,

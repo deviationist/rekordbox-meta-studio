@@ -2,18 +2,10 @@
 
 namespace App\Models\Rekordbox;
 
-use App\Models\Traits\HasReadonlyTimestamps;
-use App\Models\Traits\HasRekordboxDeletion;
-use Illuminate\Database\Eloquent\Model;
-
-class Album extends Model
+class Album extends BaseModel
 {
-    use HasReadonlyTimestamps, HasRekordboxDeletion;
-
-    protected $connection = 'rekordbox';
     protected $table = 'djmdAlbum';
     protected $primaryKey = 'ID';
-    public $timestamps = false;
 
     public function tracks()
     {

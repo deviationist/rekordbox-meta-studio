@@ -1,57 +1,40 @@
-import { Settings2 } from 'lucide-react';
-import { Table, TableState } from '@tanstack/react-table';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
+import { Table } from '@tanstack/react-table';
+import { TableState } from '../table';
 import { PaginationMeta } from '../types';
-import { ColumnResetStateCallbacks } from '../hooks/use-table-state';
+import { ColumnControl } from './column-control/column-control';
+import { Fragment, JSX } from 'react';
+import { SearchField } from './search-field';
 
 interface TableToolbarProps<TData> {
   allData: TData[];
-  filterMarkup?: React.ReactNode;
+  filterComponents?: Array<React.ComponentType | JSX.Element>;
   tableState: TableState;
   currentMeta: PaginationMeta;
   table: Table<TData>;
-  resetState: ColumnResetStateCallbacks;
 }
 
-export function TableToolbar<TData>({ allData, filterMarkup, tableState, currentMeta, table, resetState }: TableToolbarProps<TData>) {
-  const columnVisibilityStateKey = JSON.stringify(tableState);
+export function TableToolbar<TData>({
+  allData,
+  filterComponents = [],
+  tableState,
+  currentMeta,
+  table,
+}: TableToolbarProps<TData>) {
   return (
     <div className="flex items-center justify-between">
       <div className="text-sm text-muted-foreground">
-        Showing {allData?.length ? allData.length.toLocaleString() : 0} of {currentMeta.total.toLocaleString()} records
+        Showing {allData?.length ? allData.length.toLocaleString() : 0} of{' '}
+        {currentMeta.total.toLocaleString()} records
       </div>
-      {filterMarkup}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm">
-            <Settings2 className="mr-2 h-4 w-4" />
-            Columns
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[200px]">
-          <DropdownMenuItem onClick={() => resetState.columnVisibility()}>
-            Reset Layout
-          </DropdownMenuItem>
-          <DropdownMenuSeparator />
-          {table.getAllLeafColumns().map(column => (
-            <DropdownMenuCheckboxItem
-              key={`${column.id}-${columnVisibilityStateKey}`}
-              checked={column.getIsVisible()}
-              onCheckedChange={value => column.toggleVisibility(value)}
-            >
-              {column.columnDef.header as string}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <div className="flex flex-1 items-center justify-end gap-2">
+        {filterComponents.map((Component, index) => (
+          typeof Component === 'function'
+            ? <Component key={index} />
+            : <Fragment key={index}>{Component}</Fragment>
+        ))}
+        <SearchField />
+        <ColumnControl<TData> table={table} tableState={tableState} />
+      </div>
     </div>
   );
 }

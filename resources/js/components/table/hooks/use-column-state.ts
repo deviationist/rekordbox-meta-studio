@@ -1,16 +1,16 @@
 import { useCallback, useMemo, useState } from 'react';
 import { type TableState, type ColumnPinningState, type ColumnOrderState, type ColumnSizingState, type VisibilityState } from '@tanstack/react-table';
 
-interface StoredTableState {
+interface StoredColumnState {
   order: ColumnOrderState;
   visibility: VisibilityState;
   sizing: ColumnSizingState;
   pinned: ColumnPinningState;
 }
 
-interface UseTableStateOptions {
+interface UseColumnStateProps {
   storageKey: string;
-  defaults?: Partial<StoredTableState>;
+  defaults?: Partial<StoredColumnState>;
 }
 
 export interface ColumnSetStateCallbacks {
@@ -28,7 +28,7 @@ export interface ColumnResetStateCallbacks {
   all: () => void;
 }
 
-export interface UseTableState {
+export interface UseColumnState {
   columnOrder: ColumnOrderState;
   columnVisibility: VisibilityState;
   columnSizing: ColumnSizingState;
@@ -38,7 +38,7 @@ export interface UseTableState {
   resetState: ColumnResetStateCallbacks;
 }
 
-export function useTableState({ storageKey, defaults = {} }: UseTableStateOptions): UseTableState {
+export function useColumnState({ storageKey, defaults = {} }: UseColumnStateProps): UseColumnState {
   const defaultState = useMemo(() => ({
     order: defaults.order || [],
     visibility: defaults.visibility || {},
@@ -47,11 +47,11 @@ export function useTableState({ storageKey, defaults = {} }: UseTableStateOption
   }), [defaults]);
 
   // Lazy initializer - reads from localStorage only once on mount
-  const getInitialState = useCallback((): StoredTableState => {
+  const getInitialState = useCallback((): StoredColumnState => {
     try {
       const saved = localStorage.getItem(storageKey);
       if (saved) {
-        const parsed = JSON.parse(saved) as StoredTableState;
+        const parsed = JSON.parse(saved) as StoredColumnState;
         return {
           order: parsed.order || defaults.order || [],
           visibility: parsed.visibility || defaults.visibility || {},
@@ -82,7 +82,7 @@ export function useTableState({ storageKey, defaults = {} }: UseTableStateOption
   );
 
   // Helper to persist current state
-  const persistState = useCallback((newState: Partial<StoredTableState>) => {
+  const persistState = useCallback((newState: Partial<StoredColumnState>) => {
     try {
       const saved = localStorage.getItem(storageKey);
       const current = saved ? JSON.parse(saved) : {};

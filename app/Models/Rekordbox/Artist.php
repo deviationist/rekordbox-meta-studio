@@ -3,18 +3,13 @@
 namespace App\Models\Rekordbox;
 
 use App\Models\Traits\HasArtistSplitting;
-use App\Models\Traits\HasReadonlyTimestamps;
-use App\Models\Traits\HasRekordboxDeletion;
-use Illuminate\Database\Eloquent\Model;
 
-class Artist extends Model
+class Artist extends BaseModel
 {
-    use HasReadonlyTimestamps, HasRekordboxDeletion, HasArtistSplitting;
+    use HasArtistSplitting;
 
-    protected $connection = 'rekordbox';
     protected $table = 'djmdArtist';
     protected $primaryKey = 'ID';
-    public $timestamps = false;
 
     public function tracks()
     {

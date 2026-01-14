@@ -10,6 +10,9 @@ use App\Exceptions\LibraryConnectionException;
 
 class LibraryConnectionManager
 {
+
+    static public $connectionName = 'database.connections.rekordbox';
+
     /**
      * Configure the rekordbox connection for the given library
      */
@@ -27,6 +30,7 @@ class LibraryConnectionManager
 
         // Configure the rekordbox connection
         $config = [
+            'library' => $library->id,
             'driver' => 'sqlcipher',
             'database' => $databasePath,
             'prefix' => '',
@@ -36,7 +40,7 @@ class LibraryConnectionManager
                 'cipher_compatibility' => 4,
             ],
         ];
-        Config::set('database.connections.rekordbox', $config);
+        Config::set(LibraryConnectionManager::$connectionName, $config);
 
         // Purge and reconnect to apply new configuration
         DB::purge('rekordbox');

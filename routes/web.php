@@ -1,17 +1,17 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LibraryController;
-use App\Http\Controllers\ArtistController;
-use App\Http\Controllers\TrackController;
-use App\Http\Controllers\AlbumController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EntityController;
-use App\Http\Controllers\GenreController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LabelController;
 use App\Http\Controllers\LibraryStatusController;
-use App\Http\Controllers\PlaylistController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Rekordbox\ArtistController;
+use App\Http\Controllers\Rekordbox\TrackController;
+use App\Http\Controllers\Rekordbox\AlbumController;
+use App\Http\Controllers\Rekordbox\GenreController;
+use App\Http\Controllers\Rekordbox\LabelController;
+use App\Http\Controllers\Rekordbox\PlaylistController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 

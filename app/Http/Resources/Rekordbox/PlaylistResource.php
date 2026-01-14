@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources\Rekordbox;
 
+use App\Http\Resources\Rekordbox\ArtworkMetaResource;
+
 class PlaylistResource extends BaseResource
 {
     protected function additionalFields(): array
@@ -10,9 +12,7 @@ class PlaylistResource extends BaseResource
             'id' => $this->ID,
             'sequence' => $this->Seq,
             'name' => $this->Name,
-            'hasArtwork' => $this->hasArtwork(),
-            //'artworkUrl' => $this->getArtworkUrl('m'),
-            //'imagePath' => $this->ImagePath,
+            'artwork' => $this->hasArtwork() ? ArtworkMetaResource::make($this->getArtworkMeta())->resolve() : null,
             'itemCount' => count($this->items),
             'attribute' => $this->Attribute,
             'parentId' => $this->parentID,

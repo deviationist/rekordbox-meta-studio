@@ -2,18 +2,10 @@
 
 namespace App\Models\Rekordbox;
 
-use App\Models\Traits\HasReadonlyTimestamps;
-use App\Models\Traits\HasRekordboxDeletion;
-use Illuminate\Database\Eloquent\Model;
-
-class TagItem extends Model
+class TagItem extends BaseModel
 {
-    use HasReadonlyTimestamps, HasRekordboxDeletion;
-
-    protected $connection = 'rekordbox';
     protected $table = 'djmdSongMyTag';
     protected $primaryKey = 'ID';
-    public $timestamps = false;
 
     public function tag()
     {

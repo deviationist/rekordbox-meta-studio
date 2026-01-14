@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Rekordbox;
 
 use App\Http\Resources\Rekordbox\AlbumResource;
 use App\Models\Rekordbox\Album;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
-class AlbumController extends Controller
+class AlbumController extends BaseController
 {
     public function index(Request $request): Response
     {
-        $perPage = $request->integer('per_page', 50);
-
         $query = Album::query()
             ->with(['artist', 'tracks']);
 
@@ -29,7 +27,7 @@ class AlbumController extends Controller
         $sortDir = $request->string('sort_dir', 'asc');
         $query->orderBy($sortBy, $sortDir);
 
-        $albums = $query->paginate($perPage);
+        $albums = $query->paginate(self::DEFAULT_PER_PAGE);
 
         return inertia('albums/index', [
             'data' => AlbumResource::collection($albums),

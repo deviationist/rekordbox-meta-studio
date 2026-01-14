@@ -1,21 +1,22 @@
 import { flexRender, Row } from "@tanstack/react-table";
 import { VirtualItem } from "@tanstack/react-virtual";
 import { cn } from '@/lib/utils';
-import { UseTableState } from "../hooks/use-table-state";
+import { TableState } from '../table';
 
 type TableBodyProps<TData> = {
   isLoading: boolean;
   rows: Row<TData>[];
-  tableState: UseTableState;
+  tableState: TableState;
   virtualRows: VirtualItem[];
   totalSize: number;
   gridTemplateColumns: string;
 }
 
 export function TableBody<TData,>({ isLoading, rows, tableState, virtualRows, totalSize, gridTemplateColumns }: TableBodyProps<TData>) {
-  const { columnPinning } = tableState;
+  const { columnState } = tableState;
+  const { columnPinning } = columnState;
   return (
-    <div>
+    <>
       {virtualRows.length > 0 ? (
         <>
           {/* Top padding */}
@@ -76,6 +77,6 @@ export function TableBody<TData,>({ isLoading, rows, tableState, virtualRows, to
           Loading more...
         </div>
       )}
-    </div>
+    </>
   );
 }

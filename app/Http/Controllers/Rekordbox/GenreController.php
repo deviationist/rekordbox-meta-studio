@@ -1,19 +1,18 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Rekordbox;
 
-use App\Http\Resources\Rekordbox\ArtistResource;
-use App\Models\Rekordbox\Artist;
+use App\Http\Resources\Rekordbox\GenreResource;
+use App\Models\Rekordbox\Genre;
 use Illuminate\Http\Request;
 use Inertia\Response;
 
-class ArtistController extends Controller
+class GenreController extends BaseController
 {
     public function index(Request $request): Response
     {
-        $perPage = $request->integer('per_page', 50);
-
-        $query = Artist::query();
+        $query = Genre::query()
+            ->with(['tracks', 'artists']);
 
         // Apply filters
         if ($request->filled('search')) {
@@ -28,18 +27,18 @@ class ArtistController extends Controller
         $sortDir = $request->string('sort_dir', 'asc');
         $query->orderBy($sortBy, $sortDir);
 
-        $artists = $query->paginate($perPage);
+        $genres = $query->paginate(self::DEFAULT_PER_PAGE);
 
-        return inertia('artists/index', [
-            'data' => ArtistResource::collection($artists),
+        return inertia('genres/index', [
+            'data' => GenreResource::collection($genres),
             'filters' => [
                 'search' => $request->string('search', ''),
             ],
         ]);
     }
 
-    public function show(Artist $artist)
+    public function show(Genre $genre)
     {
-        return inertia('artists/show', compact('artist'));
+        return inertia('genres/show', compact('genre'));
     }
 }

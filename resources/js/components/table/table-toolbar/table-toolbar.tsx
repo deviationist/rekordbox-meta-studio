@@ -14,19 +14,21 @@ import { ColumnResetStateCallbacks } from '../hooks/use-table-state';
 
 interface TableToolbarProps<TData> {
   allData: TData[];
+  filterMarkup?: React.ReactNode;
   tableState: TableState;
   currentMeta: PaginationMeta;
   table: Table<TData>;
   resetState: ColumnResetStateCallbacks;
 }
 
-export function TableToolbar<TData>({ allData, tableState, currentMeta, table, resetState }: TableToolbarProps<TData>) {
+export function TableToolbar<TData>({ allData, filterMarkup, tableState, currentMeta, table, resetState }: TableToolbarProps<TData>) {
   const columnVisibilityStateKey = JSON.stringify(tableState);
   return (
     <div className="flex items-center justify-between">
       <div className="text-sm text-muted-foreground">
         Showing {allData?.length ? allData.length.toLocaleString() : 0} of {currentMeta.total.toLocaleString()} records
       </div>
+      {filterMarkup}
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="sm">

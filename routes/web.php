@@ -9,6 +9,7 @@ use App\Http\Controllers\EntityController;
 use App\Http\Controllers\GenreController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LabelController;
+use App\Http\Controllers\LibraryStatusController;
 use App\Http\Controllers\PlaylistController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,11 +17,11 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
-
     Route::prefix('libraries')->name('libraries.')->group(function () {
         Route::get('/', [LibraryController::class, 'index'])->name('index');
         Route::get('create', [LibraryController::class, 'create'])->name('create');
         Route::post('/', [LibraryController::class, 'store'])->name('store');
+        Route::get('{library}/status', [LibraryStatusController::class, 'show'])->name('status');
         Route::get('{library}/edit', [LibraryController::class, 'edit'])->name('edit');
         Route::put('{library}', [LibraryController::class, 'update'])->name('update');
         Route::delete('{library}', [LibraryController::class, 'destroy'])->name('destroy');
@@ -28,9 +29,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::prefix('library')->name('library.')->group(function () {
         Route::get('/default', [LibraryController::class, 'redirectToDefaultLibrary'])->name('redirect-to-default-library');
-        Route::get('/', [LibraryController::class, 'select'])->name('select');
+        Route::get('/', [LibraryController::class, 'redirectToIndex'])->name('redirect-to-library-index');
 
-        Route::prefix('{library}')->group(function () {
+        Route::prefix('{library}')->middleware(['rekordbox-connection'])->group(function () {
             Route::get('/', [LibraryController::class, 'redirectToDefaultLibraryRoute'])->name('redirect-to-default-route');
             Route::get('/entity-count', [EntityController::class, 'index'])->name('entity-count');
             Route::get('tracks', [TrackController::class, 'index'])->name('tracks.index');

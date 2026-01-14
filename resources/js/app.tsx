@@ -2,10 +2,12 @@ import '../css/app.css';
 
 import { createInertiaApp } from '@inertiajs/react';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { StrictMode } from 'react';
+import { ComponentType, ReactNode, StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { initializeTheme } from './hooks/use-appearance';
+import { AppearanceSync, initializeTheme } from './hooks/use-appearance';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { NuqsAdapter } from 'nuqs/adapters/react';
+import { LibraryProvider } from './contexts/library-context';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -19,21 +21,43 @@ const queryClient = new QueryClient({
   },
 });
 
+type PageModule = {
+  default: ComponentType & {
+    layout?: (page: ReactNode) => ReactNode;
+  };
+};
+
 createInertiaApp({
   title: (title) => (title ? `${title} - ${appName}` : appName),
   resolve: (name) =>
     resolvePageComponent(
-      `./pages/${name}.tsx`,
-      import.meta.glob('./pages/**/*.tsx'),
-    ),
+      `./Pages/${name}.tsx`,
+      import.meta.glob('./Pages/**/*.tsx')
+    ).then((module) => {
+      const page = module as PageModule;
+
+      // Add default layout if none exists
+      if (!page.default.layout) {
+        page.default.layout = (children: ReactNode) => (
+          <LibraryProvider>{children}</LibraryProvider>
+        );
+      }
+
+      return page;
+    }),
+
   setup({ el, App, props }) {
     const root = createRoot(el);
 
+
     root.render(
       <StrictMode>
-        <QueryClientProvider client={queryClient}>
-          <App {...props} />
-        </QueryClientProvider>
+        <NuqsAdapter>
+          <QueryClientProvider client={queryClient}>
+            <AppearanceSync />
+            <App {...props} />
+          </QueryClientProvider>
+        </NuqsAdapter>
       </StrictMode>,
     );
   },

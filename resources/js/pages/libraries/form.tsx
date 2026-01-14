@@ -1,15 +1,47 @@
-import { useState } from 'react';
-import { useForm } from '@inertiajs/react';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import { useMemo, useState } from 'react';
+import { Link, useForm } from '@inertiajs/react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Library } from '@/types/library';
-import { useRoute } from 'ziggy-js';
+import { LibraryIndex } from '@/types/library';
+import { route, useRoute } from 'ziggy-js';
+import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import { ChevronLeft, ChevronRight, HeartPulse, Info } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { DatabaseFileLocatonHelpDialog } from './db-file-locaton-help-dialog';
+import { getPlatform } from '@/lib/utils';
+
+type DatabaseSource = 'upload' | 'path';
 
 interface LibraryFormProps {
-  library?: Library;
+  library?: LibraryIndex;
+}
+
+function DatabaseStatusLink({ library }: { library?: LibraryIndex }) {
+  if (!library) return null;
+  return (
+    <Button variant="outline" size="sm" asChild>
+      <Link href={route('libraries.status', { library: library.id })}>
+        <HeartPulse />
+        Check DB Status
+      </Link>
+    </Button>
+  );
 }
 
 export function LibraryForm({ library }: LibraryFormProps) {
@@ -22,14 +54,13 @@ export function LibraryForm({ library }: LibraryFormProps) {
     password: '',
   });
 
-  const [sourceType, setSourceType] = useState<'upload' | 'path'>(
+  const [sourceType, setSourceType] = useState<DatabaseSource>(
     library?.storedFile ? 'upload' : 'path'
   );
 
   // Transform data before sending to handle FormData for file uploads
   transform((data) => {
     const formData = new FormData();
-
     formData.append('name', data.name);
 
     if (sourceType === 'upload' && data.file_upload) {
@@ -47,109 +78,153 @@ export function LibraryForm({ library }: LibraryFormProps) {
     if (library) {
       formData.append('_method', 'PUT');
     }
-
     return formData;
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
     if (library) {
-      put(route('libraries.update', library.id));
+      put(route('libraries.update', { library: library.id }));
     } else {
       post(route('libraries.store'));
     }
   };
 
+  const defaultDbPath = useMemo(() => {
+    switch (getPlatform()) {
+      case 'windows':
+        return 'C:\\Users\\[YourUsername]\\AppData\\Roaming\\Pioneer\\rekordbox\\master.db';
+      case 'mac':
+        return '/Users/username/Library/Pioneer/rekordbox/master.db';
+    }
+    return '';
+  }, []);
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Library Name */}
-      <div className="space-y-2">
-        <Label htmlFor="name">Library Name *</Label>
-        <Input
-          id="name"
-          value={data.name}
-          onChange={(e) => setData('name', e.target.value)}
-          placeholder="My Rekordbox Library"
-          required
-        />
-        {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
-      </div>
-
-      {/* Database Source */}
-      <div className="space-y-4">
-        <Label>Database Source *</Label>
-        <Tabs value={sourceType} onValueChange={(v) => setSourceType(v as 'upload' | 'path')}>
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="upload">Upload File</TabsTrigger>
-            <TabsTrigger value="path">File Path</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="upload" className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="file_upload">SQLite Database File</Label>
-              <Input
-                id="file_upload"
-                type="file"
-                accept=".sqlite,.sqlite3,.db"
-                onChange={(e) => setData('file_upload', e.target.files?.[0] || null)}
-              />
-              {errors.file_upload && (
-                <p className="text-sm text-destructive">{errors.file_upload}</p>
-              )}
-            </div>
-          </TabsContent>
-
-          <TabsContent value="path" className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="file_path">Path to SQLite File</Label>
-              <Input
-                id="file_path"
-                value={data.file_path}
-                onChange={(e) => setData('file_path', e.target.value)}
-                placeholder="/Users/username/Pioneer/rekordbox/master.db"
-              />
-              {errors.file_path && (
-                <p className="text-sm text-destructive">{errors.file_path}</p>
-              )}
-            </div>
-
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="is_rekordbox_folder"
-                checked={data.is_rekordbox_folder}
-                onCheckedChange={(checked) =>
-                  setData('is_rekordbox_folder', checked as boolean)
-                }
-              />
-              <Label htmlFor="is_rekordbox_folder" className="font-normal">
-                This is a Rekordbox folder (includes artwork images)
-              </Label>
-            </div>
-          </TabsContent>
-        </Tabs>
-      </div>
-
-      {/* Password */}
-      <div className="space-y-2">
-        <Label htmlFor="password">Database Password (optional)</Label>
-        <Input
-          id="password"
-          type="password"
-          value={data.password}
-          onChange={(e) => setData('password', e.target.value)}
-          placeholder="Leave empty for default password"
-        />
-        <p className="text-sm text-muted-foreground">
-          Only needed if your database uses a custom encryption password
-        </p>
-        {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
-      </div>
-
-      {/* Submit Button */}
-      <Button type="submit" disabled={processing}>
-        {library ? 'Update Library' : 'Create Library'}
-      </Button>
+    <form onSubmit={handleSubmit}>
+      <Card className="w-full sm:max-w-md">
+        <CardHeader>
+          <CardTitle>{library ? 'Edit' : 'Create'} Library</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={sourceType} onValueChange={(v) => setSourceType(v as DatabaseSource)}>
+            <FieldGroup>
+              <Field>
+                <FieldLabel htmlFor="library-name">
+                  Library Name
+                </FieldLabel>
+                <Input
+                  value={data.name}
+                  onChange={(e) => setData('name', e.target.value)}
+                  id="library-name"
+                  autoComplete="off"
+                />
+                {errors.name && <FieldError errors={[{ message: errors.name }]} />}
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="db-password">
+                  Database Password
+                </FieldLabel>
+                <Input
+                  value={data.password}
+                  onChange={(e) => setData('password', e.target.value)}
+                  id="db-password"
+                  autoComplete="off"
+                />
+                {errors.password
+                  ? <FieldError errors={[{ message: errors.password }]} />
+                  : <FieldDescription>Leave empty to use default password.</FieldDescription>}
+              </Field>
+              <Field>
+                <FieldLabel>
+                  Database Source
+                </FieldLabel>
+                <TabsList defaultValue="upload" className="gap-x-2">
+                  <TabsTrigger className="cursor-pointer select-none" disabled={!!library} value="path">Path to SQLite File</TabsTrigger>
+                  <TabsTrigger className="cursor-pointer select-none" disabled={!!library} value="upload">SQLite Database File</TabsTrigger>
+                </TabsList>
+              </Field>
+              <TabsContent value="upload">
+                <Field>
+                  <FieldLabel htmlFor="file-upload" className="flex justify-between items-baseline">
+                    SQLite Database File
+                    <DatabaseStatusLink library={library} />
+                  </FieldLabel>
+                  {library ? (
+                    <Alert>
+                      <Info className="h-4 w-4" />
+                      <AlertDescription>
+                        Database cannot be changed after creation. Create a new library if you need to use a different database.
+                      </AlertDescription>
+                    </Alert>
+                  ) : (
+                    <>
+                      <Input
+                        id="file-upload"
+                        type="file"
+                        className="cursor-pointer"
+                        accept=".sqlite,.sqlite3,.db"
+                        onChange={(e) => setData('file_upload', e.target.files?.[0] || null)}
+                      />
+                      {errors.file_upload && <FieldError errors={[{ message: errors.password }]} />}
+                    </>
+                  )}
+                </Field>
+              </TabsContent>
+              <TabsContent value="path">
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="file-path" className="flex justify-between items-baseline">
+                      <span>Path to SQLite File</span>
+                      {library ? (
+                        <DatabaseStatusLink library={library} />
+                      ) : (
+                        <DatabaseFileLocatonHelpDialog />
+                      )}
+                    </FieldLabel>
+                    <Input
+                      id="file-path"
+                      value={data.file_path}
+                      onChange={(e) => setData('file_path', e.target.value)}
+                      placeholder={defaultDbPath}
+                    />
+                    {errors.file_path && <FieldError errors={[{ message: errors.file_path }]} />}
+                  </Field>
+                  <Field orientation="horizontal">
+                    <Checkbox
+                      checked={data.is_rekordbox_folder}
+                      id="is-rekordbox-folder"
+                      onCheckedChange={(checked) => setData('is_rekordbox_folder', checked as boolean)}
+                    />
+                    <FieldContent>
+                      <FieldLabel htmlFor="is-rekordbox-folder">
+                        Is this a Rekordbox folder?
+                      </FieldLabel>
+                      <FieldDescription>
+                        When checked the system will attempt to resolve artwork from the Rekordbox-folder.
+                      </FieldDescription>
+                    </FieldContent>
+                  </Field>
+                </FieldGroup>
+              </TabsContent>
+            </FieldGroup>
+          </Tabs>
+        </CardContent>
+        <CardFooter>
+          <Field orientation="horizontal">
+            <Button variant="outline" asChild>
+              <Link className="cursor-pointer" href={route('libraries.index')}>
+                <ChevronLeft className="h-4 w-4" />
+                Back
+              </Link>
+            </Button>
+            <Button type="submit" className="cursor-pointer" disabled={processing}>
+              {library ? 'Update' : 'Create'}
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          </Field>
+        </CardFooter>
+      </Card>
     </form>
   );
 }

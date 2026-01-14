@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
+use App\Http\Resources\LibraryResource;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use App\Models\Library;
 use App\Services\EntityCountService;
 
 class HandleInertiaRequests extends Middleware
@@ -65,11 +65,11 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
-            'defaultLibrary' => fn () => $request->user()
-                ? $request->user()->libraries()->getDefault()?->id
+            'defaultLibrary' => $request->user()
+                ? new LibraryResource($request->user()->libraries()->getDefault())->resolve()
                 : null,
-            'userLibraries' => fn () => $request->user()
-                ? $request->user()->libraries()->get(['id', 'name'])
+            'userLibraries' => $request->user()
+                ? LibraryResource::collection($request->user()->libraries()->get())->resolve()
                 : null,
         ];
     }

@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Library;
-use App\Http\Requests\StoreLibraryRequest;
 use App\Http\Requests\UpdateLibraryRequest;
-use App\Http\Resources\LibraryResource;
-use App\Services\CurrentLibrary;
+use App\Http\Resources\LibraryIndexResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -19,10 +16,6 @@ class LibraryController extends Controller
 
     private $defaultLibraryRoute = 'library.tracks.index';
 
-    public function __construct(
-        private readonly CurrentLibrary $currentLibrary
-    ) {}
-
     /**
      * Display a listing of the user's libraries.
      */
@@ -31,7 +24,7 @@ class LibraryController extends Controller
         $libraries = $request->user()->libraries;
 
         return Inertia::render('libraries/index', [
-            'libraries' => LibraryResource::collection($libraries),
+            'data' => LibraryIndexResource::collection($libraries),
         ]);
     }
 
@@ -61,10 +54,10 @@ class LibraryController extends Controller
     /**
      * Store a newly created library.
      */
-    public function store(StoreLibraryRequest $request)
+    public function store(Request $request)
     {
-        $data = $request->validated();
-        $data['user_id'] = Auth::id();
+        //$data = $request->validated();
+        $data = $request->toArray();
 
         // Handle file upload
         if ($request->hasFile('file_upload')) {
@@ -72,14 +65,12 @@ class LibraryController extends Controller
             $path = $file->store(config('rekordbox.storage_path'));
             $data['stored_file'] = $path;
             $data['file_path'] = null;
-
-            // File uploads don't have rekordbox folder access
             $data['is_rekordbox_folder'] = false;
         } else {
             $data['stored_file'] = null;
         }
 
-        Library::create($data);
+        $request->user()->libraries()->create($data);
 
         return redirect()->route('libraries.index')->with('success', 'Library created successfully.');
     }
@@ -89,10 +80,10 @@ class LibraryController extends Controller
      */
     public function edit(Library $library)
     {
-        //$this->authorize('update', $library);
+        $this->authorize('update', $library);
 
         return Inertia::render('libraries/edit', [
-            'library' => LibraryResource::make($library)->resolve(),
+            'library' => LibraryIndexResource::make($library)->resolve(),
         ]);
     }
 
@@ -145,18 +136,8 @@ class LibraryController extends Controller
     /**
      * Show library selector page
      */
-    public function select(Request $request)
+    public function redirectToIndex()
     {
-        $libraries = $request->user()->libraries;
-
-        if ($libraries->count() === 1) {
-            return redirect()->route('library.tracks', ['library' => $libraries->first()]);
-        }
-
-        return Inertia::render('libraries/select', [
-            'data' => [
-                'libraries' => LibraryResource::collection($libraries)->resolve(),
-            ]
-        ]);
+        return redirect()->route('libraries.index');
     }
 }

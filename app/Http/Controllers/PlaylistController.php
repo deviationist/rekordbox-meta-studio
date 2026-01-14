@@ -13,7 +13,7 @@ class PlaylistController extends Controller
 {
     use HasArtwork;
 
-    public function index(Request $request, Library $library): Response
+    public function index(Request $request): Response
     {
         $perPage = $request->integer('per_page', 50);
 
@@ -36,7 +36,6 @@ class PlaylistController extends Controller
         $playlists = $query->paginate($perPage);
 
         return inertia('playlists/index', [
-            'librarySupportsArtwork' => $library->supportsArtwork(),
             'data' => PlaylistResource::collection($playlists),
             'filters' => [
                 'search' => $request->string('search', ''),
@@ -44,7 +43,7 @@ class PlaylistController extends Controller
         ]);
     }
 
-    public function artwork(Request $request, ?Library $library, Playlist $playlist)
+    public function artwork(Request $request, Library $library, Playlist $playlist)
     {
         return $this->resolveArtwork(
             $library,

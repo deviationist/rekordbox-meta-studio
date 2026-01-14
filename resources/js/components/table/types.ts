@@ -20,6 +20,7 @@ export type TableProps<TData, TFilter> = {
   data: TData[];
   meta: PaginationMeta;
   endpoint: string;
+  filterMarkup?: React.ReactNode;
   filters?: TFilter;
   storageKey?: string;
 }

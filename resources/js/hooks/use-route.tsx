@@ -1,6 +1,6 @@
 import { Ziggy } from '@/ziggy';
 import { RouteName, RouteParams, RouteUrl, useRoute as useRouteNative } from 'ziggy-js';
-import { useLibrary } from './use-library';
+import { useLibrary } from '@/contexts/library-context';
 
 interface ConfigItem {
   matchParam: string;
@@ -14,7 +14,7 @@ export function useRoute() {
   const config: ConfigItem[] = [
     {
       matchParam: 'library',
-      paramValue: library,
+      paramValue: library?.id,
     }
   ];
 

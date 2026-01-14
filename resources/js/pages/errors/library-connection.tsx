@@ -3,6 +3,7 @@ import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { useRoute } from '@/hooks/use-route';
+import AppLayout from '@/layouts/app-layout';
 
 interface LibraryConnectionErrorProps {
   message: string;
@@ -11,10 +12,9 @@ interface LibraryConnectionErrorProps {
 export default function LibraryConnectionError({ message }: LibraryConnectionErrorProps) {
   const route = useRoute();
   return (
-    <>
+    <AppLayout breadcrumbs={[]}>
       <Head title="Library Connection Error" />
-
-      <div className="min-h-screen flex items-center justify-center p-4 bg-background">
+      <div className="flex-1 flex items-center justify-center px-4 py-8 bg-background">
         <div className="max-w-md w-full space-y-6">
           <Alert variant="destructive">
             <AlertCircle className="h-4 w-4" />
@@ -43,13 +43,13 @@ export default function LibraryConnectionError({ message }: LibraryConnectionErr
               </Link>
             </Button>
             <Button asChild variant="outline">
-              <Link href={route('library.select')}>
+              <Link href={route('libraries.index')}>
                 Select Different Library
               </Link>
             </Button>
           </div>
         </div>
       </div>
-    </>
+    </AppLayout>
   );
 }

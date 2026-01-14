@@ -16,14 +16,8 @@ class LibraryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'userId' => $this->user->id,
             'name' => $this->name,
-            'filePath' => $this->file_path,
-            'storedFile' => $this->stored_file,
-            'isRekordboxFolder' => $this->is_rekordbox_folder,
-            'createdAt' => $this->created_at,
-            'updatedAt' => $this->updated_at,
-            'deletedAt' => $this->deleted_at,
+            'supports' => $this->supports(),
         ];
     }
 }

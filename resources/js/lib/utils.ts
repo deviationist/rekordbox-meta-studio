@@ -16,3 +16,24 @@ export function isSameUrl(
 export function resolveUrl(url: NonNullable<InertiaLinkProps['href']>): string {
     return typeof url === 'string' ? url : url.url;
 }
+
+export const getPlatform = () => {
+  if (typeof window === 'undefined') return 'unknown';
+
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  const platform = window.navigator.platform.toLowerCase();
+
+  if (platform.includes('mac') || userAgent.includes('mac')) {
+    return 'mac';
+  }
+
+  if (platform.includes('win') || userAgent.includes('win')) {
+    return 'windows';
+  }
+
+  if (platform.includes('linux') || userAgent.includes('linux')) {
+    return 'linux';
+  }
+
+  return 'unknown';
+};

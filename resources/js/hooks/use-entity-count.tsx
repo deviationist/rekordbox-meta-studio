@@ -2,7 +2,7 @@ import { SharedData, EntityCount } from "@/types";
 import { usePage } from "@inertiajs/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { useLibrary } from "./use-library";
+import { useLibrary } from '@/contexts/library-context';
 import { useRoute } from "./use-route";
 
 export function useEntityCount() {

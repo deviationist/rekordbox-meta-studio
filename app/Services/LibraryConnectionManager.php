@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Library;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
+use \Illuminate\Database\Connection;
 use App\Exceptions\LibraryConnectionException;
 
 class LibraryConnectionManager
@@ -12,7 +13,7 @@ class LibraryConnectionManager
     /**
      * Configure the rekordbox connection for the given library
      */
-    public static function configureConnection(Library $library): void
+    public static function configureConnection(Library $library): Connection
     {
         if (!$library->isDatabaseAccessible()) {
             throw new LibraryConnectionException(
@@ -25,7 +26,7 @@ class LibraryConnectionManager
         $databaseKey = $library->getDecryptionPassword();
 
         // Configure the rekordbox connection
-        Config::set('database.connections.rekordbox', [
+        $config = [
             'driver' => 'sqlcipher',
             'database' => $databasePath,
             'prefix' => '',
@@ -34,14 +35,20 @@ class LibraryConnectionManager
                 'key' => $databaseKey,
                 'cipher_compatibility' => 4,
             ],
-        ]);
+        ];
+        Config::set('database.connections.rekordbox', $config);
 
         // Purge and reconnect to apply new configuration
         DB::purge('rekordbox');
 
         // Test the connection
         try {
-            DB::connection('rekordbox')->getPdo();
+            $connection = DB::connection('rekordbox');
+
+            // Ensure connection is okay by running query
+            $connection->getPdo();
+            $connection->select('SELECT 1');
+            return $connection;
         } catch (\Exception $e) {
             throw new LibraryConnectionException(
                 "Failed to connect to library '{$library->name}'. " .

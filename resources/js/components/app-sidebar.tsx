@@ -1,4 +1,3 @@
-//import { NavFooter } from '@/components/nav/nav-footer';
 import { NavMain } from '@/components/nav/nav-main';
 import { NavUser } from '@/components/nav/nav-user';
 import {
@@ -80,7 +79,7 @@ export function AppSidebar() {
     },
   ], [route]);
 
-  //const footerNavItems: NavItem[] = [];
+  //const footerNavItems: NavItem[] = useMemo(() => [], [route]);
 
   return (
     <Sidebar collapsible="icon" variant="inset">

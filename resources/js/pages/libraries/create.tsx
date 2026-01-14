@@ -12,21 +12,13 @@ export default function Create() {
       title: 'Libraries',
       href: route('libraries.index'),
     },
-    {
-      title: 'Create',
-    },
+    { title: 'Create' },
   ], [route]);
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Create Library" />
-      <div className="py-12">
-        <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-            <div className="p-6 text-gray-900">
-              <LibraryForm />
-            </div>
-          </div>
-        </div>
+      <div className="container mx-auto px-4 py-12">
+        <LibraryForm />
       </div>
     </AppLayout>
   );

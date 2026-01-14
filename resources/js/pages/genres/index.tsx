@@ -8,7 +8,6 @@ import { useRoute } from '@/hooks/use-route';
 import { useMemo } from 'react';
 
 type PageProps = {
-  librarySupportsArtwork: boolean;
   data: PageData;
   filters: Filters;
 }

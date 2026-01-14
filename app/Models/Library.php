@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\LibraryConnectionManager;
+use \Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -46,9 +47,9 @@ class Library extends Model
         return $query->orderBy('name', 'asc')->first();
     }
 
-    public function configureRekordboxConnection(): void
+    public function configureRekordboxConnection(): Connection
     {
-        LibraryConnectionManager::configureConnection($this);
+        return LibraryConnectionManager::configureConnection($this);
     }
 
     protected static function boot()
@@ -77,6 +78,13 @@ class Library extends Model
         }
 
         throw new \RuntimeException("Library {$this->name} has no database file configured.");
+    }
+
+    public function supports(): array
+    {
+        return [
+            'artwork' => $this->supportsArtwork(),
+        ];
     }
 
     // Query scope for artwork-capable libraries

@@ -55,37 +55,5 @@ export function useColumnReordering<TData,>(table: Table<TData>, setState: Colum
     });
   };
 
-  /*
-  const reorderColumn = (draggedColumnId: string, targetColumnId: string, side: Direction) => {
-    setState.columnOrder((old) => {
-
-      const newOrder = old.length === 0
-        ? table.getVisibleLeafColumns().map(col => col.id)
-        : [...old];
-      const draggedIndex = newOrder.indexOf(draggedColumnId);
-      const targetIndex = newOrder.indexOf(targetColumnId);
-
-      console.log("draggedIndex", draggedIndex, draggedColumnId);
-      console.log("targetIndex", targetIndex, targetColumnId);
-      console.log("currentOrder", newOrder);
-
-      // If either column not found, return current order unchanged
-      if (draggedIndex === -1 || targetIndex === -1) {
-        return newOrder;
-      }
-
-      // Remove dragged column
-      newOrder.splice(draggedIndex, 1);
-
-      // Insert at new position
-      const adjustedTargetIndex = draggedIndex < targetIndex ? targetIndex - 1 : targetIndex;
-      const insertIndex = side === 'left' ? adjustedTargetIndex : adjustedTargetIndex + 1;
-      newOrder.splice(insertIndex, 0, draggedColumnId);
-
-      return newOrder;
-    });
-  };
-  */
-
   return { reorderColumn };
 }

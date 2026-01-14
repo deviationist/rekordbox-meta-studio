@@ -44,6 +44,13 @@ declare module 'ziggy-js' {
     "libraries.index": [],
     "libraries.create": [],
     "libraries.store": [],
+    "libraries.status": [
+        {
+            "name": "library",
+            "required": true,
+            "binding": "id"
+        }
+    ],
     "libraries.edit": [
         {
             "name": "library",
@@ -66,7 +73,7 @@ declare module 'ziggy-js' {
         }
     ],
     "library.redirect-to-default-library": [],
-    "library.select": [],
+    "library.redirect-to-library-index": [],
     "library.redirect-to-default-route": [
         {
             "name": "library",
@@ -83,8 +90,7 @@ declare module 'ziggy-js' {
     "library.tracks.index": [
         {
             "name": "library",
-            "required": true,
-            "binding": "id"
+            "required": true
         }
     ],
     "library.tracks.show": [
@@ -114,8 +120,7 @@ declare module 'ziggy-js' {
     "library.playlists.index": [
         {
             "name": "library",
-            "required": true,
-            "binding": "id"
+            "required": true
         }
     ],
     "library.playlists.show": [

@@ -30,7 +30,7 @@ export const columnConfig = ({ includeArtwork }: ColumnConfigProps): ColumnDef<T
         meta: {
           padding: false,
         },
-        cell: ({ row }) => <Artwork<Track> row={row} />
+        cell: ({ row, table }) => <Artwork table={table} row={row} />,
       })]
     : []),
   {

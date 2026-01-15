@@ -1,15 +1,13 @@
 import { Album } from "./album"
 import { Artist } from "./artist"
-import { Artwork } from "./artwork"
-import { RekordboxEntity, RekordboxCommon } from "./common"
+import { RekordboxEntity, RekordboxCommon, RekordboxArtwork } from "./common"
 import { type FileType } from "./file-type"
 import { Genre } from "./genre"
 import { Key } from "./key"
 import { Label } from "./label"
 import { Tag } from "./tag"
 
-export type Track = RekordboxEntity & RekordboxCommon & {
-  artwork?: Artwork;
+export type Track = RekordboxArtwork & RekordboxEntity & RekordboxCommon & {
 
   filePath: string;
   fileName: string;

@@ -12,7 +12,6 @@ class LibraryConnectionException extends Exception
         if ($request->routeIs('libraries.*')) {
             return null; // Let the route handle it
         }
-        dd('hehe');
 
         if ($request->wantsJson()) {
             return response()->json([

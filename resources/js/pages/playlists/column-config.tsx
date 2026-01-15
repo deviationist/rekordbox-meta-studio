@@ -20,7 +20,7 @@ export const columnConfig = ({ includeArtwork }: ColumnConfigProps): ColumnDef<P
         meta: {
           padding: false,
         },
-        cell: ({ row }) => <Artwork<Playlist> row={row} />
+        cell: ({ row }) => <Artwork row={row} />
       })]
     : []),
   {

@@ -1,15 +1,13 @@
-import { Artwork } from "./artwork";
-import { RekordboxEntity, RekordboxCommon } from "./common";
+import { RekordboxEntity, RekordboxCommon, RekordboxArtwork } from "./common";
 import { Track } from "./track";
 
-export type Playlist = RekordboxEntity & RekordboxCommon & {
+export type Playlist = RekordboxArtwork & RekordboxEntity & RekordboxCommon & {
   sequence: number;
   name: string;
   itemCount: number;
   attribute: number;
   parentId: string;
   smartList: string;
-  artwork?: Artwork;
 }
 
 export type PlaylistItem = RekordboxCommon & {

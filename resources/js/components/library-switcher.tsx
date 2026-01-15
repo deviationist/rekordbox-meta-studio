@@ -53,7 +53,7 @@ export function LibrarySwitcher({ libraries }: LibrarySwitcherProps) {
       ...route().params, // Existing params
       library: selectedLibrary.id,
     });
-    router.visit(newRoute, { preserveState: true });
+    router.visit(newRoute);
   }, [currentRoute, libraries, route, setLibrary]);
 
   if (libraries.length <= 1) {

@@ -24,7 +24,6 @@ export function useSortingState({
     'sortBy',
     parseAsString.withDefault(defaultSort?.id ?? '')
   );
-  console.log("sortBy", sortBy);
 
   const [sortOrder, setSortOrder] = useQueryState<SortDirection>(
     'sortOrder',
@@ -50,7 +49,6 @@ export function useSortingState({
       ? updaterOrValue(sortingState) // Call the updater with current state
       : updaterOrValue;
     const [columnSort] = newSortingState;
-    console.log("hmm", columnSort);
     if (columnSort) {
       setSortBy(columnSort.id);
       setSortOrder(columnSort.desc ? 'desc' : 'asc');

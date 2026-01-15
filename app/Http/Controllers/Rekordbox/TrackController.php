@@ -111,7 +111,7 @@ class TrackController extends BaseController
         );
     }
 
-    public function show(Track $track)
+    public function show(Library $library, Track $track)
     {
         $track->load(['artist', 'album', 'genre']);
 

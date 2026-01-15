@@ -1,3 +1,5 @@
+import { Artwork } from "./artwork";
+
 export type RekordboxCommon = {
   uuid: string;
   //rb_data_status: number;
@@ -10,8 +12,12 @@ export type RekordboxCommon = {
   updatedAt: string; // Should be cast to Date?
 }
 
+export type RekordboxArtwork = {
+  artwork?: Artwork;
+};
+
 export type RekordboxEntity = {
   id: string;
-}
+};
 
 export type ArtworkSize = 'm' | 's';

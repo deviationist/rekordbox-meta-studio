@@ -59,8 +59,8 @@ class Track extends BaseModel
         }
         $library = $this->library;
         return [
-            'title' => '',
-            'alt' => '',
+            'title' => "\"{$this->Title}\" by {$this->artist->Name}",
+            'alt' => "Artwork for track \"{$this->name}\"",
             'src' => route('library.tracks.artwork.show', ['size' => $size, 'library' => $library, 'track' => $this]),
             'src_original' => route('library.tracks.artwork.show', ['size' => $size, 'library' => $library, 'track' => $this]),
         ];

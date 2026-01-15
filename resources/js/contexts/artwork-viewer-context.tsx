@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useCallback, useMemo } from
 import { Artwork } from '@/types/rekordbox/artwork';
 import { Table, Row } from '@tanstack/react-table';
 import { RekordboxArtwork, RekordboxEntity } from '@/types/rekordbox/common';
+import { ArtworkViewer } from '@/components/artwork-viewer';
 
 type ArtworkViewerContextType = {
   row: Row<BaseRekordboxData> | undefined;
@@ -35,9 +36,10 @@ const hasArtwork = (row?: Row<BaseRekordboxData>) => !!row?.original.artwork;
 interface ArtworkViewerProviderProps {
   children: React.ReactNode;
   skipMissingImages?: boolean;
+  handleViewer?: boolean;
 }
 
-export function ArtworkViewerProvider({ children, skipMissingImages = false }: ArtworkViewerProviderProps) {
+export function ArtworkViewerProvider({ children, skipMissingImages = false, handleViewer = true }: ArtworkViewerProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [row, setRow] = useState<Row<BaseRekordboxData>>();
   const [table, setTable] = useState<Table<BaseRekordboxData>>();
@@ -108,6 +110,7 @@ export function ArtworkViewerProvider({ children, skipMissingImages = false }: A
         totalCount,
       }}
     >
+      {handleViewer && <ArtworkViewer />}
       {children}
     </ArtworkViewerContext.Provider>
   );

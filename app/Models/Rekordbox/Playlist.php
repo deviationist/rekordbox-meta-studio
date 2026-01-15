@@ -28,7 +28,7 @@ class Playlist extends BaseModel
             'title' => $this->name,
             'alt' => "Artwork for playlist {$this->name}",
             'src' => route('library.playlists.artwork.show', ['size' => $size, 'library' => $library, 'track' => $this]),
-            'src_original' => route('library.playlists.artwork.show', ['size' => $size, 'library' => $library, 'track' => $this]),
+            'src_original' => route('library.playlists.artwork.show', ['library' => $library, 'track' => $this]),
         ];
     }
 

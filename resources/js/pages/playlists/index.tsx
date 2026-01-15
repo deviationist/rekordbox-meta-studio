@@ -7,6 +7,7 @@ import { columnConfig } from './column-config';
 import { useMemo } from 'react';
 import { useRoute } from '@/hooks/use-route';
 import { useLibrary } from '@/contexts/library-context';
+import { ArtworkViewerProvider } from '@/contexts/artwork-viewer-context';
 
 type PageProps = {
   data: PageData;
@@ -37,14 +38,16 @@ export default function Index({ data, filters }: PageProps) {
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Playlists" />
       <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-        <Table<Playlist, Filters>
-          columns={columnConfig({ includeArtwork: library?.supports?.artwork })}
-          data={items}
-          meta={meta}
-          endpoint="/playlists"
-          filters={filters}
-          storageKey="playlists-table-state"
-        />
+        <ArtworkViewerProvider>
+          <Table<Playlist, Filters>
+            columns={columnConfig({ includeArtwork: library?.supports?.artwork })}
+            data={items}
+            meta={meta}
+            endpoint="/playlists"
+            filters={filters}
+            storageKey="playlists-table-state"
+          />
+        </ArtworkViewerProvider>
       </div>
     </AppLayout>
   );

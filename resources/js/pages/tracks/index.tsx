@@ -7,7 +7,6 @@ import { Track } from '@/types/rekordbox/track';
 import { useMemo } from 'react';
 import { useRoute } from '@/hooks/use-route';
 import { useLibrary } from '@/contexts/library-context';
-import { ArtworkViewer } from '@/components/artwork-viewer';
 import { ArtworkViewerProvider } from '@/contexts/artwork-viewer-context';
 
 type PageProps = {
@@ -45,7 +44,6 @@ export default function Index({ data, filters }: PageProps) {
       <Head title="Tracks" />
       <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
         <ArtworkViewerProvider>
-          <ArtworkViewer />
           <Table<Track, Filters>
             columns={columnConfig({ includeArtwork: library?.supports?.artwork })}
             data={items}

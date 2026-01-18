@@ -39,6 +39,12 @@ declare module 'ziggy-js' {
     "two-factor.secret-key": [],
     "two-factor.recovery-codes": [],
     "two-factor.regenerate-recovery-codes": [],
+    "api.library.artist.search": [
+        {
+            "name": "library",
+            "required": true
+        }
+    ],
     "home": [],
     "dashboard.index": [],
     "libraries.index": [],

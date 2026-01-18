@@ -14,6 +14,7 @@ export type Track = RekordboxArtwork & RekordboxEntity & RekordboxCommon & {
   title: string;
   artist: Artist;
   album: Album;
+  albumArtist: Album;
   genre: Genre;
   bpm: number;
   duration: string;

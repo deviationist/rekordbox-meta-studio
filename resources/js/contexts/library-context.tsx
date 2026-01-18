@@ -7,8 +7,8 @@ import { Library } from '@/types/library';
 import { useLibraryUrlSync } from '@/hooks/use-library-url-sync';
 
 type LibraryContextType = readonly [
-  Library | undefined,
-  (value: Library | undefined) => void,
+  Library,
+  (value: Library) => void,
   () => void
 ];
 
@@ -16,7 +16,7 @@ export const LibraryContext = createContext<LibraryContextType | null>(null);
 
 export function LibraryProvider({ children }: { children: ReactNode }) {
   const page = usePage<SharedData>();
-  const store = useLibraryStore<Library | undefined>(page.props.defaultLibrary);
+  const store = useLibraryStore<Library>(page.props.defaultLibrary);
   useLibraryUrlSync(store);
   return (
     <LibraryContext value={store}>

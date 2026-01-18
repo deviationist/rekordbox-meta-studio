@@ -1,38 +1,56 @@
+import useLocalStorage from "@/hooks/use-local-storage";
 import useSessionStorage from "@/hooks/use-session-storage";
 import { Library, LibraryIndex } from "@/types/library";
-import { SetStateAction, useCallback } from "react";
+import { SetStateAction, useCallback, useMemo } from "react";
 
 export type LibraryStore = readonly [
-  Library | undefined,
-  (value: SetStateAction<Library | LibraryIndex | undefined>) => void,
+  Library,
+  (value: SetStateAction<Library | LibraryIndex>) => void,
   () => void
 ]
 
 export const libraryStoreKey = 'selected-library';
-export const useLibraryStore = <T extends Library | undefined>(defaultValue?: T) => {
-  const [storedValue, setStoredValue, removeValue] = useSessionStorage<T | undefined>(
+
+export const useLibraryStore = <T extends Library>(defaultValue?: T) => {
+  const [sessionValue, setSessionValue, removeSessionValue] = useSessionStorage<T | undefined>(
     libraryStoreKey,
-    defaultValue
+    undefined // No default for session
   );
 
-  // Wrap the setter to ensure Library type
+  const [localValue, setLocalValue, removeLocalValue] = useLocalStorage<T | undefined>(
+    libraryStoreKey,
+    undefined // No default for local
+  );
+
+  // Priority: sessionStorage -> localStorage -> defaultValue
+  const storedValue = useMemo(() => {
+    return sessionValue ?? localValue ?? defaultValue;
+  }, [sessionValue, localValue, defaultValue]) as T;
+
+  // Wrap the setter to update both storages
   const setLibrary = useCallback(
-    (value: SetStateAction<T | undefined>) => {
-      setStoredValue((prev) => {
-        const newValue = value instanceof Function ? value(prev) : value;
+    (value: SetStateAction<T>) => {
+      const newValue = value instanceof Function ? value(storedValue) : value;
 
-        // Convert to Library if it's defined
-        if (newValue !== undefined && newValue !== null) {
-          return ensureLibrary(newValue as LibraryIndex | Library) as T;
-        }
+      // Convert to Library if it's defined
+      const converted = newValue !== undefined && newValue !== null
+        ? ensureLibrary(newValue as LibraryIndex | Library) as T
+        : newValue;
 
-        return newValue;
-      });
+      // Update both storages
+      setSessionValue(converted);
+      setLocalValue(converted);
     },
-    [setStoredValue]
+    [storedValue, setSessionValue, setLocalValue]
   );
 
-  return [storedValue, setLibrary, removeValue] as const;
+  // Wrap the remove to clear both storages
+  const removeLibrary = useCallback(() => {
+    removeSessionValue();
+    removeLocalValue();
+  }, [removeSessionValue, removeLocalValue]);
+
+  return [storedValue, setLibrary, removeLibrary] as const;
 };
 
 function ensureLibrary({ id, name, supports }: LibraryIndex | Library): Library {

@@ -1,0 +1,18 @@
+import { User } from "lucide-react";
+import { usePage } from "@inertiajs/react";
+import { ModelFilter } from "./model-filter";
+import { SharedData } from '@/types';
+import { ModelFilterState } from "@/types/table";
+
+export function ComposerFilter() {
+  const { filters } = usePage<SharedData & { filters: ModelFilterState }>().props;
+  return (
+    <ModelFilter
+      modelName="artist"
+      queryParam="composer"
+      label="Composer"
+      icon={User}
+      activeItems={filters.composer || []}
+    />
+  );
+}

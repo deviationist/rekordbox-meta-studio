@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Rekordbox;
 
+use App\Http\Controllers\Traits\HasFilterSearch;
 use App\Http\Resources\Rekordbox\LabelResource;
 use App\Models\Rekordbox\Label;
 use Illuminate\Http\Request;
@@ -9,6 +10,13 @@ use Inertia\Response;
 
 class LabelController extends BaseController
 {
+    use HasFilterSearch;
+
+    public function search(Request $request)
+    {
+        return $this->filterSearch($request, Label::class);
+    }
+
     public function index(Request $request): Response
     {
         $query = Label::query()

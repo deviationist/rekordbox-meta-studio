@@ -7,7 +7,6 @@ class AlbumResource extends BaseResource
     protected function additionalFields(): array
     {
         return [
-            'id' => $this->ID,
             'name' => $this->Name,
             'artist' => ArtistResource::make($this->artist)->resolve(),
             'imagePath' => $this->ImagePath,

@@ -14,6 +14,6 @@ class Album extends BaseModel
 
     public function artist()
     {
-        return $this->belongsTo(Artist::class, 'ArtistID', 'ID');
+        return $this->belongsTo(Artist::class, 'AlbumArtistID', 'ID');
     }
 }

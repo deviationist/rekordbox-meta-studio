@@ -103,7 +103,7 @@ export function ColumnControl<TData>({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="cursor-pointer" size="sm">
-          <Settings2 className="mr-2 h-4 w-4" />
+          <Settings2 className="h-4 w-4" />
           Columns
         </Button>
       </DropdownMenuTrigger>

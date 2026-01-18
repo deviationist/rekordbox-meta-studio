@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Rekordbox;
 
+use App\Http\Controllers\Traits\HasFilterSearch;
 use App\Http\Resources\Rekordbox\ArtistResource;
 use App\Models\Rekordbox\Artist;
 use Illuminate\Http\Request;
@@ -9,6 +10,13 @@ use Inertia\Response;
 
 class ArtistController extends BaseController
 {
+    use HasFilterSearch;
+
+    public function search(Request $request)
+    {
+        return $this->filterSearch($request, Artist::class);
+    }
+
     public function index(Request $request): Response
     {
         $query = Artist::query();

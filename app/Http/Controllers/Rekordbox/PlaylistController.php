@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Rekordbox;
 
 use App\Http\Controllers\Traits\HasArtwork;
+use App\Http\Controllers\Traits\HasFilterSearch;
 use App\Http\Resources\Rekordbox\PlaylistResource;
 use App\Models\Library;
 use App\Models\Rekordbox\Playlist;
@@ -11,7 +12,12 @@ use Inertia\Response;
 
 class PlaylistController extends BaseController
 {
-    use HasArtwork;
+    use HasArtwork, HasFilterSearch;
+
+    public function search(Request $request)
+    {
+        return $this->filterSearch($request, Playlist::class);
+    }
 
     public function index(Request $request): Response
     {

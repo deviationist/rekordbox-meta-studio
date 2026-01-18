@@ -58,6 +58,12 @@ export const columnConfig = ({ includeArtwork }: ColumnConfigProps): ColumnDef<T
     cell: ({ row }) => <NamedItem<Artist> namedItem={row.getValue('albumArtist')} />,
   },
   {
+    accessorKey: 'label',
+    header: 'Label',
+    size: 200,
+    cell: ({ row }) => <NamedItem<Artist> namedItem={row.getValue('label')} />,
+  },
+  {
     accessorKey: 'bpm',
     header: 'BPM',
     size: 115,

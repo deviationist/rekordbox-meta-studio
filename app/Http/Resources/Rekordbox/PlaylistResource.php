@@ -9,7 +9,6 @@ class PlaylistResource extends BaseResource
     protected function additionalFields(): array
     {
         return [
-            'id' => $this->ID,
             'sequence' => $this->Seq,
             'name' => $this->Name,
             'artwork' => $this->hasArtwork() ? ArtworkMetaResource::make($this->getArtworkMeta())->resolve() : null,

@@ -4,6 +4,7 @@ import { PaginationMeta } from '../types';
 import { ColumnControl } from './column-control/column-control';
 import { Fragment, JSX } from 'react';
 import { SearchField } from './search-field';
+import { SortBy } from './sort-by';
 
 interface TableToolbarProps<TData> {
   allData: TData[];
@@ -32,6 +33,7 @@ export function TableToolbar<TData>({
             ? <Component key={index} />
             : <Fragment key={index}>{Component}</Fragment>
         ))}
+        <SortBy<TData> table={table} tableState={tableState} />
         <SearchField />
         <ColumnControl<TData> table={table} tableState={tableState} />
       </div>

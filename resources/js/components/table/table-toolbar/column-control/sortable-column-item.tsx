@@ -32,7 +32,7 @@ export function SortableColumnItem({ id, label, isSortable = true, checked, onCh
       <DropdownMenuCheckboxItem
         checked={checked}
         onCheckedChange={onCheckedChange}
-        className="flex-1"
+        className="flex-1 cursor-pointer"
         onSelect={(e) => e.preventDefault()} // Prevent menu from closing
       >
         {label}

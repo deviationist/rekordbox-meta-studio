@@ -17,7 +17,7 @@ export type RekordboxArtwork = {
 };
 
 export type RekordboxEntity = {
-  id: string;
+  id: number;
 };
 
 export type ArtworkSize = 'm' | 's';

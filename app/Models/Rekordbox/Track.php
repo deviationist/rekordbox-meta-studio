@@ -9,8 +9,10 @@ use App\Models\Rekordbox\Scopes\ExcludeStreamingFilesScope;
 use App\Models\Traits\HasRekordboxArtwork;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
 
 class Track extends BaseModel
 {
@@ -19,6 +21,7 @@ class Track extends BaseModel
     protected $table = 'djmdContent';
     protected $primaryKey = 'ID';
     protected $appends = ['file_type_label'];
+    public static $filterLabelKey = 'Title';
 
     protected static function booted()
     {
@@ -64,6 +67,11 @@ class Track extends BaseModel
             'src' => route('library.tracks.artwork.show', ['size' => $size, 'library' => $library, 'track' => $this]),
             'src_original' => route('library.tracks.artwork.show', ['library' => $library, 'track' => $this]),
         ];
+    }
+
+    public function playlistItems(): HasMany
+    {
+        return $this->hasMany(PlaylistItem::class, 'ContentID', 'ID');
     }
 
     // Relationships
@@ -126,6 +134,19 @@ class Track extends BaseModel
     public function album(): BelongsTo
     {
         return $this->belongsTo(Album::class, 'AlbumID', 'ID');
+    }
+
+    public function albumArtist(): HasOneThrough
+    {
+        return $this->hasOneThrough(
+            Artist::class,
+            Album::class,
+            'ID',
+            'ID',
+            'AlbumID',
+            'AlbumArtistID'
+        );
+
     }
 
     public function genre(): BelongsTo

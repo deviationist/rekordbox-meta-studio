@@ -14,7 +14,7 @@ import { TableHeader } from './table-header/table-header';
 import { useTableGridColumns } from './hooks/use-table-grid-columns';
 import { useDetectColumnsOverflow } from './hooks/use-detect-columns-overflow';
 import { TableBody } from './table-body/table-body';
-import type { GenericFilters, GenericPageProps, TableProps, PaginationMeta } from './types';
+import type { FilterState, GenericPageProps, TableProps, PaginationMeta } from './types';
 import { UseSortingState, useSortingState } from './hooks/use-sorting-state';
 
 export { PaginationMeta };
@@ -26,7 +26,7 @@ export type TableState = {
 
 export function Table<
   TData,
-  TFilter extends GenericFilters,
+  TFilter extends FilterState,
 >({
   columns,
   data,
@@ -56,6 +56,8 @@ export function Table<
     columnPinning,
     setState: setColumnState,
   } = columnState;
+
+  //useEffect(() => setAllData([]), [search])
 
   // Sorting
   const tableSorting = useSortingState();
@@ -92,6 +94,8 @@ export function Table<
   });
 
   const { rows } = table.getRowModel();
+
+  //console.log("filters", filters);
 
   // Virtual scrolling
   const rowVirtualizer = useVirtualizer({

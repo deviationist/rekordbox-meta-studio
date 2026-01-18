@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/sidebar';
 import type { MainNavItem, SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { AudioWaveform, DiscAlbum, Guitar, LayoutGrid, Tag, Library, List, Disc3 } from 'lucide-react';
+import { AudioWaveform, DiscAlbum, Guitar, LayoutGrid, Tag, Library, List, Disc3, User } from 'lucide-react';
 import AppLogo from './app-logo';
 import { useMemo } from 'react';
 import { useRoute } from '@/hooks/use-route';
@@ -52,7 +52,7 @@ export function AppSidebar() {
           title: 'Artists',
           displayCount: true,
           href: route('library.artists.index'),
-          icon: Guitar,
+          icon: User,
         },
         {
           key: 'albums',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Rekordbox;
 
+use App\Http\Controllers\Traits\HasFilterSearch;
 use App\Http\Resources\Rekordbox\AlbumResource;
 use App\Models\Rekordbox\Album;
 use Illuminate\Http\Request;
@@ -9,6 +10,13 @@ use Inertia\Response;
 
 class AlbumController extends BaseController
 {
+    use HasFilterSearch;
+
+    public function search(Request $request)
+    {
+        return $this->filterSearch($request, Album::class);
+    }
+
     public function index(Request $request): Response
     {
         $query = Album::query()

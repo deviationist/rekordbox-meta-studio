@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Rekordbox;
 
+use App\Http\Controllers\Traits\HasFilterSearch;
 use App\Http\Resources\Rekordbox\GenreResource;
 use App\Models\Rekordbox\Genre;
 use Illuminate\Http\Request;
@@ -9,6 +10,13 @@ use Inertia\Response;
 
 class GenreController extends BaseController
 {
+    use HasFilterSearch;
+
+    public function search(Request $request)
+    {
+        return $this->filterSearch($request, Genre::class);
+    }
+
     public function index(Request $request): Response
     {
         $query = Genre::query()

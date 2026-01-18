@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LibraryStatusController;
 use App\Http\Controllers\Rekordbox\ArtistController;
 use App\Http\Controllers\Rekordbox\TrackController;
+use App\Http\Controllers\Rekordbox\TrackListController;
 use App\Http\Controllers\Rekordbox\AlbumController;
 use App\Http\Controllers\Rekordbox\GenreController;
 use App\Http\Controllers\Rekordbox\LabelController;
@@ -34,7 +35,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::prefix('{library}')->middleware(['rekordbox-connection'])->group(function () {
             Route::get('/', [LibraryController::class, 'redirectToDefaultLibraryRoute'])->name('redirect-to-default-route');
             Route::get('/entity-count', [EntityController::class, 'index'])->name('entity-count');
-            Route::get('tracks', [TrackController::class, 'index'])->name('tracks.index');
+            Route::get('tracks', TrackListController::class)->name('tracks.index');
             Route::get('tracks/{track}', [TrackController::class, 'show'])->name('tracks.show');
             Route::get('tracks/{track}/artwork', [TrackController::class, 'artwork'])->name('tracks.artwork.show');
 

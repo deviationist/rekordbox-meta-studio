@@ -1,4 +1,4 @@
-import { useQueryState, parseAsString, parseAsStringEnum } from 'nuqs';
+import { useQueryState, parseAsString, parseAsStringEnum, Options } from 'nuqs';
 import { useEffect, useMemo } from 'react';
 import { ColumnSort, SortingState, SortDirection, OnChangeFn } from '@tanstack/react-table';
 
@@ -7,7 +7,11 @@ export interface UseSortingState {
   sortOrder: SortDirection;
   currentSort: ColumnSort | null;
   sortingState: SortingState,
+  toggleSortOrder: () => void,
   setSorting: OnChangeFn<SortingState>;
+  setSortBy: (value: string | ((old: string) => string | null) | null, options?: Options | undefined) => Promise<URLSearchParams>,
+  setSortOrder: (value: "asc" | "desc" | ((old: "asc" | "desc") => "asc" | "desc" | null) | null, options?: Options | undefined) => Promise<URLSearchParams>,
+  resetSorting: () => void;
 }
 
 interface UseSortingStateProps {
@@ -53,17 +57,26 @@ export function useSortingState({
       setSortBy(columnSort.id);
       setSortOrder(columnSort.desc ? 'desc' : 'asc');
     } else {
-      // Handle empty sorting state (when sorting is cleared)
-      setSortBy(null);
-      setSortOrder(null);
+      resetSorting();
     }
   };
+
+  const resetSorting = () => {
+    setSortBy(null);
+    setSortOrder(null);
+  };
+
+  const toggleSortOrder = () => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
 
   return {
     sortBy,
     sortOrder,
     currentSort,
     sortingState,
+    toggleSortOrder,
     setSorting,
+    setSortBy,
+    setSortOrder,
+    resetSorting,
   };
 }

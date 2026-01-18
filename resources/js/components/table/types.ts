@@ -1,6 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table';
 import { PageProps } from '@inertiajs/core'
 import { JSX } from 'react';
+import { ModelFilterItem } from '@/types/table';
 
 export type PaginationMeta = {
   current_page: number;
@@ -13,7 +14,10 @@ export type GenericPageProps<TData> = PageProps & {
   meta: PaginationMeta;
 };
 
-export type GenericFilters = Record<string, string | number>;
+export type FilterValue = string | number | ModelFilterItem[];
+
+// Generic filters record
+export type FilterState = Record<string, FilterValue>;
 
 export type TableProps<TData, TFilter> = {
   columns: ColumnDef<TData>[];

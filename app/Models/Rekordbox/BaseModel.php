@@ -15,6 +15,18 @@ class BaseModel extends Model {
     use HasReadonlyTimestamps, HasRekordboxDeletion, ResolvesFromLibraryDatabase;
 
     protected $connection = 'rekordbox';
+    public static $filterIdentificationKey = 'ID';
+    public static $filterLabelKey = 'Name';
+
+    public function getFilterIdentificationValue(): mixed
+    {
+        return $this->{static::$filterIdentificationKey};
+    }
+
+    public function getFilterLabelValue(): mixed
+    {
+        return $this->{static::$filterLabelKey};
+    }
 
     protected function library(): Attribute
     {

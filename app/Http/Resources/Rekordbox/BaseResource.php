@@ -12,6 +12,7 @@ abstract class BaseResource extends JsonResource
     protected function commonFields(): array
     {
         return [
+            'id' => $this->ID,
             'uuid' => $this->UUID,
             //rb_data_status
             //rb_local_data_status

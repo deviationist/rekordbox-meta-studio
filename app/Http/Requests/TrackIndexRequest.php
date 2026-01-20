@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Helpers\DurationConverter;
+use App\Rules\DurationFormat;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TrackIndexRequest extends FormRequest
@@ -12,29 +14,60 @@ class TrackIndexRequest extends FormRequest
     {
         return [
             // Relations
-            'artist' => ['nullable', 'array'],
-            'genre' => ['nullable', 'array'],
-            'label' => ['nullable', 'array'],
-            'album' => ['nullable', 'array'],
-            'albumArtist' => ['nullable', 'array'],
-            'remixer' => ['nullable', 'array'],
-            'key' => ['nullable', 'array'],
-            'composer' => ['nullable', 'array'],
-            'playlist' => ['nullable', 'array'],
+            'artist' => ['sometimes', 'array'],
+            'genre' => ['sometimes', 'array'],
+            'label' => ['sometimes', 'array'],
+            'album' => ['sometimes', 'array'],
+            'albumArtist' => ['sometimes', 'array'],
+            'remixer' => ['sometimes', 'array'],
+            'key' => ['sometimes', 'array'],
+            'composer' => ['sometimes', 'array'],
+            'playlist' => ['sometimes', 'array'],
+            'fileType' => ['sometimes', 'array'],
 
-            'search' => ['nullable', 'string', 'max:255'],
-            'minBpm' => ['nullable', 'integer', 'min:0', 'max:300'],
-            'maxBpm' => ['nullable', 'integer', 'min:0', 'max:300', 'gte:min_bpm'],
-            'minRating' => ['nullable', 'integer', 'min:0', 'max:5'],
-            'maxRating' => ['nullable', 'integer', 'min:0', 'max:5', 'gte:min_rating'],
-            'sortBy' => ['nullable', 'string', 'in:' . implode(',', self::ALLOWED_SORT_FIELDS)],
-            'sortOrder' => ['nullable', 'string', 'in:asc,desc'],
+            'search' => ['sometimes', 'string', 'max:255'],
+            'minBpm' => ['sometimes', 'integer', 'min:0', 'max:300'],
+            'maxBpm' => ['sometimes', 'integer', 'min:0', 'max:300', 'gte:minBpm'],
+            'minLength' => ['sometimes', 'string', new DurationFormat],
+            'maxLength' => ['sometimes', 'string', new DurationFormat],
+            'minRating' => ['sometimes', 'integer', 'min:0', 'max:5'],
+            'maxRating' => ['sometimes', 'integer', 'min:0', 'max:5', 'gte:min_rating'],
+            'sortBy' => ['sometimes', 'string', 'in:' . implode(',', self::ALLOWED_SORT_FIELDS)],
+            'sortOrder' => ['sometimes', 'string', 'in:asc,desc'],
         ];
+    }
+
+    public function getMinBpm(): ?int
+    {
+        return $this->filled('minBpm')
+            ? $this->input('minBpm') * 100
+            : null;
+    }
+
+    public function getMaxBpm(): ?int
+    {
+        return $this->filled('maxBpm')
+            ? $this->input('maxBpm') * 100
+            : null;
+    }
+
+    public function getMinLengthInSeconds(): ?int
+    {
+        return $this->filled('minLength')
+            ? DurationConverter::toSeconds($this->input('minLength'))
+            : null;
+    }
+
+    public function getMaxLengthInSeconds(): ?int
+    {
+        return $this->filled('maxLength')
+            ? DurationConverter::toSeconds($this->input('maxLength'))
+            : null;
     }
 
     protected function prepareForValidation()
     {
-        $commaSeparatedKeys = ['artist', 'genre', 'label', 'album', 'albumArtist', 'remixer', 'key', 'composer', 'playlist'];
+        $commaSeparatedKeys = ['artist', 'genre', 'label', 'album', 'albumArtist', 'remixer', 'key', 'composer', 'playlist', 'fileType'];
         foreach ($commaSeparatedKeys as $key) {
             if ($this->has($key) && is_string($this->get($key))) {
                 $this->merge([

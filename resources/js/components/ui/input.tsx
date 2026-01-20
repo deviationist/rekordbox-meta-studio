@@ -1,8 +1,8 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
-import { Button } from "./button"
 import { X } from "lucide-react"
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "./input-group"
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
   return (
@@ -21,14 +21,14 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
 }
 
 interface InputWithCrossProps extends React.ComponentProps<"input"> {
+  icon?: React.ReactElement,
   containerClassName?: string
   onClear?: () => void
 }
 
 function InputWithCross({
-  className,
+  icon,
   containerClassName,
-  type,
   value,
   onChange,
   onClear,
@@ -36,7 +36,7 @@ function InputWithCross({
 }: InputWithCrossProps) {
   const handleClear = () => {
     if (onClear) {
-      onClear()
+      onClear();
     } else if (onChange) {
       // Create a synthetic event for controlled inputs
       const syntheticEvent = {
@@ -46,31 +46,30 @@ function InputWithCross({
       onChange(syntheticEvent)
     }
   }
-
   return (
-    <div className={cn("relative", containerClassName)}>
-      <Input
-        type={type}
-        className={cn("pr-10", className)}
-        value={value}
-        onChange={onChange}
-        {...props}
-      />
-      {value && (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          className="absolute cursor-pointer right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-          onClick={handleClear}
-          tabIndex={-1}
-        >
-          <X className="h-4 w-4" />
-          <span className="sr-only">Clear</span>
-        </Button>
+    <InputGroup className={cn(containerClassName)}>
+      {icon && (
+        <InputGroupAddon>
+          {icon}
+        </InputGroupAddon>
       )}
-    </div>
-  )
+      <InputGroupInput value={value} onChange={onChange} {...props} />
+      {value && (
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton
+            type="button"
+            variant="ghost"
+            size="icon-xs"
+            className="cursor-pointer"
+            onClick={handleClear}
+          >
+            <X className="h-4 w-4" />
+            <span className="sr-only">Clear</span>
+          </InputGroupButton>
+        </InputGroupAddon>
+      )}
+    </InputGroup>
+  );
 }
 
 export { Input, InputWithCross }

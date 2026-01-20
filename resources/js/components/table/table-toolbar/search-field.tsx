@@ -2,7 +2,7 @@ import { InputWithCross } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { parseAsString, useQueryState } from "nuqs";
 import { useState, type FormEvent } from "react";
-import { Search } from "lucide-react";
+import { Search, SearchIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function SearchField() {
@@ -24,13 +24,13 @@ export function SearchField() {
   const showButton = hasValue && isDirty;
 
   return (
-    <form onSubmit={handleSubmit} className="w-[220px] flex gap-2">
+    <form onSubmit={handleSubmit} className="flex-1 flex">
       <InputWithCross
+        icon={<SearchIcon />}
         containerClassName={cn(
-          "transition-all duration-200",
-          showButton ? "w-[calc(100%-2.5rem)]" : "w-full",
+          "h-8",
+          showButton ? "rounded-r-none" : "w-full",
         )}
-        className="h-8"
         placeholder="Search"
         value={localValue}
         onChange={e => setLocalValue(e.target.value)}
@@ -40,9 +40,12 @@ export function SearchField() {
         <Button
           type="submit"
           size="sm"
-          className="h-8 w-8 cursor-pointer shrink-0 animate-in fade-in zoom-in-95 duration-200"
+          className="cursor-pointer shrink-0 rounded-l-none"
           variant="secondary"
         >
+          <span className="sr-only">
+            Search
+          </span>
           <Search className="h-4 w-4" />
         </Button>
       )}

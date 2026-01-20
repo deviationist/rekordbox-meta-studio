@@ -2,8 +2,12 @@
 
 namespace App\Enums\Rekordbox;
 
+use App\Enums\Traits\HasEnumHelpers;
+
 enum FileType: int
 {
+    use HasEnumHelpers;
+
     case MP3 = 1;
     case AIFF = 12;
     case WAV = 11;
@@ -30,9 +34,8 @@ enum FileType: int
         };
     }
 
-    // Get enum from integer, fallback to UNKNOWN
-    public static function fromValue(int $value): self
+    public static function unknown(): self
     {
-        return self::tryFrom($value) ?? self::UNKNOWN;
+        return self::UNKNOWN;
     }
 }

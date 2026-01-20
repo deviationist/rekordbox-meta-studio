@@ -18,6 +18,9 @@ import { RemixerFilter } from '@/components/table/filters/remixer-filter';
 import { ComposerFilter } from '@/components/table/filters/composer-filter';
 import { KeyFilter } from '@/components/table/filters/key-filter';
 import { PlaylistFilter } from '@/components/table/filters/playlist-filter';
+import { FileTypeFilter } from '@/components/table/filters/file-type-filter';
+import { BpmFilter } from '@/components/table/filters/bpm-filter';
+import { DurationFilter } from '@/components/table/filters/duration-filter';
 
 type PageProps = {
   data: PageData;
@@ -41,7 +44,7 @@ type Filters = {
   artists?: ModelFilterState['artists'];
 }
 
-export default function Index({ data, filters }: PageProps) {
+export default function Index({ data }: PageProps) {
   const route = useRoute();
   const [library] = useLibrary();
   const { meta, data: items } = data;
@@ -62,14 +65,16 @@ export default function Index({ data, filters }: PageProps) {
             data={items}
             meta={meta}
             endpoint={route('library.tracks.index')}
-            filters={filters}
             filterComponents={[
               <ArtistFilter />,
               <AlbumArtistFilter />,
               <RemixerFilter />,
               <ComposerFilter />,
               <PlaylistFilter />,
+              <FileTypeFilter />,
               <KeyFilter />,
+              <BpmFilter />,
+              <DurationFilter />,
               <LabelFilter />,
               <AlbumFilter />,
               <GenreFilter />,

@@ -1,18 +1,17 @@
 import { List } from "lucide-react";
 import { usePage } from "@inertiajs/react";
-import { ModelFilter } from "./model-filter";
 import { SharedData } from '@/types';
 import { ModelFilterState } from "@/types/table";
+import { FilterSelect } from "./base-components/filter-select";
 
 export function PlaylistFilter() {
-  const { filters, filterOptions } = usePage<SharedData & { filters: ModelFilterState, filterOptions: ModelFilterState }>().props;
+  const { filterOptions } = usePage<SharedData & { filterOptions: ModelFilterState }>().props;
   return (
-    <ModelFilter
-      modelName="playlist"
+    <FilterSelect
+      queryParam="playlist"
       label="Playlist"
       icon={List}
-      selectableItems={filterOptions.playlist}
-      activeItems={filters.playlist || []}
+      selectableItems={filterOptions.playlists}
     />
   );
 }

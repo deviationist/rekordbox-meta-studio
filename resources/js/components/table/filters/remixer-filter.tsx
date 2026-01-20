@@ -1,6 +1,6 @@
 import { User } from "lucide-react";
 import { usePage } from "@inertiajs/react";
-import { ModelFilter } from "./model-filter";
+import { ModelFilter } from "./base-components/model-filter";
 import { SharedData } from '@/types';
 import { ModelFilterState } from "@/types/table";
 

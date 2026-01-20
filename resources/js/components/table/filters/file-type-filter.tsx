@@ -1,17 +1,18 @@
-import { Music2 } from "lucide-react";
+import { FileAudio } from "lucide-react";
 import { usePage } from "@inertiajs/react";
 import { SharedData } from '@/types';
 import { ModelFilterState } from "@/types/table";
 import { FilterSelect } from "./base-components/filter-select";
 
-export function KeyFilter() {
+export function FileTypeFilter() {
   const { filterOptions } = usePage<SharedData & { filterOptions: ModelFilterState }>().props;
   return (
     <FilterSelect
-      queryParam="key"
-      label="Key"
-      icon={Music2}
-      selectableItems={filterOptions.keys}
+      queryParam="fileType"
+      label="File Type"
+      icon={FileAudio}
+      search={false}
+      selectableItems={filterOptions.fileTypes}
     />
   );
 }

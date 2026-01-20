@@ -1,4 +1,4 @@
-import { ArrowUp, ArrowDown, ChevronsUpDown, Settings2 } from 'lucide-react';
+import { ChevronsUpDown, X, AArrowDown, AArrowUp, RotateCcw } from 'lucide-react';
 import { SortDirection, Table } from '@tanstack/react-table';
 import { TableState } from '../table';
 import {
@@ -13,6 +13,8 @@ import { Button } from '@/components/ui/button';
 import { useMemo, useState } from 'react';
 import { Field } from '@/components/ui/field';
 import { InputWithCross } from '@/components/ui/input';
+import { cn } from '@/lib/utils';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export interface ColumnControlProps<TData> {
   tableState: TableState;
@@ -53,26 +55,31 @@ export function SortBy<TData>({
   }, [initialColumns, searchString]);
 
   return (
-    <div className="inline-flex gap-1">
-      <DropdownMenu>
+    <div className="inline-flex w-full">
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="sm" className="cursor-pointer">
+          <Button variant="outline" size="sm" className={cn(
+              "cursor-pointer flex-1 min-w-0",
+              sortByColumn ?  "rounded-r-none border-r-0" : "",
+            )}>
             {sortByColumn ? (
-              <>Sort by {sortByColumn.column.columnDef.header as string}</>
+              <p className="truncate flex-1 min-w-0" title={sortByColumn.column.columnDef.header as string}>
+                {sortByColumn.column.columnDef.header as string}
+              </p>
             ) : (
               <>Sort</>
             )}
             <ChevronsUpDown className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-[220px]">
+        <DropdownMenuContent align="start" style={{ width: 'var(--radix-dropdown-menu-trigger-width)' }}>
           {sortByColumn && (
             <>
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => sortingState.resetSorting()}
               >
-                <Settings2 className="mr-2 h-4 w-4" />
+                <RotateCcw className="mr-2 h-4 w-4" />
                 Reset Sort
               </DropdownMenuItem>
               <DropdownMenuSeparator />
@@ -87,7 +94,7 @@ export function SortBy<TData>({
             />
           </Field>
           <DropdownMenuSeparator />
-          <div className="max-h-[70vh] overflow-y-auto overflow-x-hidden">
+          <ScrollArea className="h-[50vh]">
             {initialColumns.map(({ id, column }) => (
               visibleColumns.includes(id) && (
                 <DropdownMenuCheckboxItem
@@ -103,25 +110,38 @@ export function SortBy<TData>({
                 </DropdownMenuCheckboxItem>
               )
             ))}
-          </div>
+          </ScrollArea>
         </DropdownMenuContent>
       </DropdownMenu>
 
       {sortByColumn && (
-        <Button
-          onClick={() => sortingState.toggleSortOrder()}
-          variant="outline"
-          size="sm"
-          className="cursor-pointer"
-          title={sortOrder === 'asc' ? 'Sorted ascending - click to reverse' : 'Sorted descending - click to reverse'}
-        >
-          <span>Order</span>
-          {sortOrder === 'asc' ? (
-            <ArrowUp className="h-4 w-4" />
-          ) : (
-            <ArrowDown className="h-4 w-4" />
-          )}
-        </Button>
+        <>
+          <div className="w-px h-full border-r border-input" />
+          <Button
+            onClick={() => sortingState.toggleSortOrder()}
+            variant="outline"
+            size="sm"
+            className="cursor-pointer rounded-none border-x-0"
+            title={sortOrder === 'asc' ? 'Sorted ascending - click to reverse' : 'Sorted descending - click to reverse'}
+          >
+            <span className="sr-only">Order</span>
+            {sortOrder === 'asc' ? (
+              <AArrowUp />
+            ) : (
+              <AArrowDown />
+            )}
+          </Button>
+          <div className="w-px h-full border-r border-input" />
+          <Button
+            onClick={() => sortingState.resetSorting()}
+            variant="outline"
+            size="sm"
+            className="cursor-pointer rounded-l-none border-l-0"
+            title={sortOrder === 'asc' ? 'Sorted ascending - click to reverse' : 'Sorted descending - click to reverse'}
+          >
+            <X />
+          </Button>
+        </>
       )}
     </div>
   );

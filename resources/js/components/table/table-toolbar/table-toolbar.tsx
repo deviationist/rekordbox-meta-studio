@@ -22,12 +22,15 @@ export function TableToolbar<TData>({
   table,
 }: TableToolbarProps<TData>) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="grid gap-3">
+      {/* Record count - always on top */}
       <div className="text-sm text-muted-foreground">
         Showing {allData?.length ? allData.length.toLocaleString() : 0} of{' '}
         {currentMeta.total.toLocaleString()} records
       </div>
-      <div className="flex flex-1 items-center justify-end gap-2">
+
+      {/* Filters grid - responsive */}
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(200px,1fr))] lg:gap-3">
         {filterComponents.map((Component, index) => (
           typeof Component === 'function'
             ? <Component key={index} />

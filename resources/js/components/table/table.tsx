@@ -32,7 +32,6 @@ export function Table<
   data,
   meta,
   endpoint,
-  filters = {} as TFilter,
   filterComponents,
   storageKey = 'table-state',
 }: TableProps<TData, Partial<TFilter>>) {
@@ -56,8 +55,6 @@ export function Table<
     columnPinning,
     setState: setColumnState,
   } = columnState;
-
-  //useEffect(() => setAllData([]), [search])
 
   // Sorting
   const tableSorting = useSortingState();
@@ -94,8 +91,6 @@ export function Table<
   });
 
   const { rows } = table.getRowModel();
-
-  //console.log("filters", filters);
 
   // Virtual scrolling
   const rowVirtualizer = useVirtualizer({

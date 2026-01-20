@@ -19,37 +19,42 @@ import { InputWithCross } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
 
-interface ModelFilterProps {
-  modelName: string;
-  queryParam?: string;
-  //displayAll?: boolean;
+type BaseFilterProps = {
+  search?: boolean;
   label: string;
   icon?: LucideIcon;
+  className?: string;
   selectableItems?: FilterItem[];
   activeItems: FilterItem[];
-}
+};
+
+type ModelFilterProps = BaseFilterProps &
+  (
+    | { modelName: string; queryParam?: string }
+    | { modelName?: never; queryParam: string }
+  );
 
 export function ModelFilter({
   modelName,
   queryParam,
   //displayAll
+  search = true,
   label,
   icon: Icon,
-  selectableItems: selectableItemsInitial,
+  className,
   activeItems: activeItemsInitial,
 }: ModelFilterProps) {
   // Implement displayAll-prop - if true then all items are loaded, 100 at a time, with lazy load
   const [library] = useLibrary();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const isLocalSearch = selectableItemsInitial !== undefined;
-  const [selectableItems, setSelectableItems] = useState<FilterItem[]>(selectableItemsInitial ?? []);
+  const [selectableItems, setSelectableItems] = useState<FilterItem[]>([]);
   const [activeItems, setActiveItems] = useState<FilterItem[]>(activeItemsInitial);
   const [isLoading, setIsLoading] = useState(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // nuqs for URL state (comma-separated IDs)
-  const [selectedIds, setSelectedIds] = useQueryState(queryParam ?? modelName, {
+  const [selectedIds, setSelectedIds] = useQueryState(queryParam ?? modelName as string, {
     defaultValue: "",
     parse: (value) => value,
     serialize: (value) => value,
@@ -110,22 +115,14 @@ export function ModelFilter({
 
   // Trigger search when query or selected items change
   useEffect(() => {
-    if (isLocalSearch) {
-      const filteredItems = (selectableItemsInitial || []).filter((item =>
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !selectedIdSet.has(String(item.id))
-      ));
-      setSelectableItems(filteredItems);
-    } else {
-      setIsLoading(true);
-      const excludeIds = Array.from(selectedIdSet);
-      debouncedSearch(searchQuery, excludeIds);
+    setIsLoading(true);
+    const excludeIds = Array.from(selectedIdSet);
+    debouncedSearch(searchQuery, excludeIds);
 
-      return () => {
-        debouncedSearch.cancel();
-      };
-    }
-  }, [searchQuery, selectedIdSet, selectableItemsInitial, isLocalSearch, debouncedSearch]);
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [searchQuery, selectedIdSet, debouncedSearch]);
 
   // Cleanup on unmount
   useEffect(() => {
@@ -161,11 +158,7 @@ export function ModelFilter({
 
   const handleClearSearch = () => {
     setSearchQuery("");
-    if (isLocalSearch) {
-      setSelectableItems(selectableItemsInitial || []);
-    } else {
-      setSelectableItems([]);
-    }
+    setSelectableItems([]);
   };
 
   const activeCount = useMemo(() => activeItems.length, [activeItems]);
@@ -173,15 +166,17 @@ export function ModelFilter({
   const hasSearchQuery = searchQuery.trim().length > 0;
 
   return (
-    <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
-      <div className="flex items-center gap-0">
-        <DropdownMenuTrigger asChild>
+    <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
+
+      <DropdownMenuTrigger asChild>
+        <div className="flex items-center gap-0 w-full">
           <Button
             size="sm"
             variant="outline"
             className={cn(
-              "cursor-pointer inline-flex items-center gap-2",
+              "cursor-pointer flex-1 inline-flex items-center gap-2",
               hasActiveFilters ? "rounded-r-none" : "",
+              className,
           )}
           >
             {Icon && <Icon className="h-4 w-4" />}
@@ -192,33 +187,35 @@ export function ModelFilter({
               </Badge>
             )}
           </Button>
-        </DropdownMenuTrigger>
-
-        {hasActiveFilters && (
-          <Button
-            variant="outline"
-            size="sm"
-            title="Clear all"
-            className="cursor-pointer has-[>svg]:px-2 rounded-l-none border-l-0"
-            onClick={handleClear}
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
-
-      <DropdownMenuContent className="w-64" align="start">
-        <div className="p-1">
-          <InputWithCross
-            placeholder={`Search ${label.toLowerCase()}...`}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onClear={handleClearSearch}
-            className="h-9"
-          />
+          {hasActiveFilters && (
+            <Button
+              variant="outline"
+              size="sm"
+              title="Clear all"
+              className="cursor-pointer has-[>svg]:px-2 rounded-l-none border-l-0"
+              onClick={handleClear}
+              onPointerDown={(e) => e.stopPropagation()}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
         </div>
+      </DropdownMenuTrigger>
 
-        <ScrollArea className="h-64">
+      <DropdownMenuContent align="start" style={{ width: 'var(--radix-dropdown-menu-trigger-width)' }}>
+        {search && (
+          <div className="p-1">
+            <InputWithCross
+              placeholder={`Search ${label.toLowerCase()}...`}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onClear={handleClearSearch}
+              className="h-9"
+            />
+          </div>
+        )}
+
+        <ScrollArea className="h-[50vh]">
           <div className="p-1 space-y-1">
             {/* Always show active/selected items first */}
             {hasActiveFilters && (
@@ -246,7 +243,7 @@ export function ModelFilter({
             )}
 
             {/* Show search results (excluding selected items) */}
-            {(hasSearchQuery || isLocalSearch) && (
+            {hasSearchQuery && (
               <>
                 {hasActiveFilters && selectableItems.length > 0 && (
                   <div className="px-2 py-1 text-xs font-semibold text-muted-foreground inline-flex items-center gap-1">
@@ -283,7 +280,7 @@ export function ModelFilter({
             )}
 
             {/* Empty state when no search and no active filters */}
-            {!hasSearchQuery && !hasActiveFilters && (
+            {!hasSearchQuery && search && !hasActiveFilters && (
               <div className="py-6 text-center text-sm text-muted-foreground">
                 Search to add filters
               </div>

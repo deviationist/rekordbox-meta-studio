@@ -1,8 +1,8 @@
 import { Disc3 } from "lucide-react";
 import { usePage } from "@inertiajs/react";
-import { ModelFilter } from "./model-filter";
 import { SharedData } from '@/types';
 import { ModelFilterState } from "@/types/table";
+import { ModelFilter } from "./base-components/model-filter";
 
 export function LabelFilter() {
   const { filters } = usePage<SharedData & { filters: ModelFilterState }>().props;

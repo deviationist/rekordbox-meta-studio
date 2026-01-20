@@ -31,6 +31,7 @@ import { useMemo, useState } from 'react';
 import { Field } from '@/components/ui/field';
 import { InputWithCross } from '@/components/ui/input';
 import { SortableColumnItem } from './sortable-column-item';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export interface ColumnControlProps<TData> {
   tableState: TableState;
@@ -100,18 +101,17 @@ export function ColumnControl<TData>({
     setColumns(initialColumns);
   };
   return (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="cursor-pointer" size="sm">
           <Settings2 className="h-4 w-4" />
           Columns
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[220px]">
-
+      <DropdownMenuContent align="start" style={{ width: 'var(--radix-dropdown-menu-trigger-width)' }}>
         <DropdownMenuSub>
-          <DropdownMenuSubTrigger className="cursor-pointer">
-            <RotateCcw className="mr-2 h-4 w-4" />
+          <DropdownMenuSubTrigger className="cursor-pointer flex gap-2">
+            <RotateCcw className="h-4 w-4" />
             Reset Options
           </DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
@@ -143,7 +143,7 @@ export function ColumnControl<TData>({
           />
         </Field>
         <DropdownMenuSeparator />
-        <div className="max-h-[70vh] overflow-y-auto overflow-x-hidden">
+        <ScrollArea className="h-[50vh]">
           <DndContext
             sensors={sensors}
             collisionDetection={closestCenter}
@@ -166,7 +166,7 @@ export function ColumnControl<TData>({
               ))}
             </SortableContext>
           </DndContext>
-        </div>
+        </ScrollArea>
       </DropdownMenuContent>
     </DropdownMenu>
   );

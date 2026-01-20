@@ -1,8 +1,8 @@
-export type ModelFilterItem = {
+export type FilterItem = {
   id: string | number;
   name: string;
 };
 
-export type ModelFilterState = {
-  [key: string]: ModelFilterItem[];
+export type FilterState = {
+  [key: string]: FilterItem[];
 };

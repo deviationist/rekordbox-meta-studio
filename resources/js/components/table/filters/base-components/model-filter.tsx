@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLibrary } from "@/contexts/library-context";
-import type { ModelFilterItem as FilterItem } from "@/types/table";
+import type { FilterItem as FilterItem } from "@/types/table";
 import { InputWithCross } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { Spinner } from "@/components/ui/spinner";
@@ -26,6 +26,7 @@ type BaseFilterProps = {
   className?: string;
   selectableItems?: FilterItem[];
   activeItems: FilterItem[];
+  itemComponent?: (item: FilterItem) => React.ReactElement;
 };
 
 type ModelFilterProps = BaseFilterProps &
@@ -43,6 +44,7 @@ export function ModelFilter({
   icon: Icon,
   className,
   activeItems: activeItemsInitial,
+  itemComponent,
 }: ModelFilterProps) {
   // Implement displayAll-prop - if true then all items are loaded, 100 at a time, with lazy load
   const [library] = useLibrary();
@@ -273,7 +275,7 @@ export function ModelFilter({
                       onCheckedChange={() => handleToggleItem(item)}
                       className="group-hover:border-primary"
                     />
-                    <span className="text-sm flex-1">{item.name}</span>
+                    <span className="text-sm flex-1">{itemComponent ? itemComponent(item) : item.name}</span>
                   </label>
                 ))}
               </>

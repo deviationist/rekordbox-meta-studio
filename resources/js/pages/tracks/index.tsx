@@ -9,7 +9,7 @@ import { useRoute } from '@/hooks/use-route';
 import { useLibrary } from '@/contexts/library-context';
 import { ArtworkViewerProvider } from '@/contexts/artwork-viewer-context';
 import { ArtistFilter } from '@/components/table/filters/artist-filter';
-import { ModelFilterState } from '@/types/table';
+import { FilterState } from '@/types/table';
 import { AlbumFilter } from '@/components/table/filters/album-filter';
 import { GenreFilter } from '@/components/table/filters/genre-filter';
 import { AlbumArtistFilter } from '@/components/table/filters/album-artist-filter';
@@ -41,7 +41,7 @@ type Filters = {
   key?: string;
   min_rating?: number;
 
-  artists?: ModelFilterState['artists'];
+  artists?: FilterState['artists'];
 }
 
 export default function Index({ data }: PageProps) {

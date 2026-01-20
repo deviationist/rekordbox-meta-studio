@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { ModelFilterItem as FilterItem } from "@/types/table";
+import type { FilterItem as FilterItem } from "@/types/table";
 import { InputWithCross } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +21,7 @@ type FilterSelectProps = {
   label: string;
   icon?: LucideIcon;
   selectableItems?: FilterItem[];
+  itemComponent?: (item: FilterItem) => React.ReactElement;
 };
 
 export function FilterSelect({
@@ -29,6 +30,7 @@ export function FilterSelect({
   label,
   icon: Icon,
   selectableItems,
+  itemComponent,
 }: FilterSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -190,7 +192,9 @@ export function FilterSelect({
                     onCheckedChange={() => handleToggleItem(item)}
                     className="group-hover:border-primary"
                   />
-                  <span className="text-sm flex-1">{item.name}</span>
+                  <span className="text-sm flex-1">
+                    {itemComponent ? itemComponent(item) : item.name}
+                  </span>
                 </label>
               ))}
             </>

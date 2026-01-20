@@ -19,6 +19,15 @@ export const getKeyColor = (key?: string): string => {
   if (majorKeys.includes(normalizedKey)) return 'blue';
   if (minorKeys.includes(normalizedKey)) return 'purple';
 
+  // Handle short Camelot notation (e.g., "2m" -> "2A", "2d" -> "2B")
+  const shortCamelotMatch = normalizedKey.match(/^(\d{1,2})([md])$/i);
+  if (shortCamelotMatch) {
+    const [, number, type] = shortCamelotMatch;
+    const fullCamelot = `${number}${type.toLowerCase() === 'm' ? 'A' : 'B'}`;
+    if (majorKeys.includes(fullCamelot)) return 'blue';
+    if (minorKeys.includes(fullCamelot)) return 'purple';
+  }
+
   // Convert standard notation to Camelot
   const keyToCamelot: Record<string, string> = {
     // Major keys (B)
@@ -36,18 +45,18 @@ export const getKeyColor = (key?: string): string => {
     'B maj': '1B', 'B': '1B',
 
     // Minor keys (A)
-    'A min': '5A', 'Am': '5A',
-    'B♭ min': '12A', 'Bbm': '12A', 'A#m': '12A', 'Bb min': '12A', 'A# min': '12A',
-    'B min': '7A', 'Bm': '7A',
-    'C min': '2A', 'Cm': '2A',
-    'C# min': '9A', 'C#m': '9A', 'D♭m': '9A', 'Dbm': '9A', 'Db min': '9A',
-    'D min': '4A', 'Dm': '4A',
-    'E♭ min': '11A', 'Ebm': '11A', 'D#m': '11A', 'Eb min': '11A', 'D# min': '11A',
-    'E min': '6A', 'Em': '6A',
-    'F min': '1A', 'Fm': '1A',
-    'F# min': '8A', 'F#m': '8A', 'G♭m': '8A', 'Gbm': '8A', 'Gb min': '8A',
-    'G min': '3A', 'Gm': '3A',
-    'A♭ min': '10A', 'Abm': '10A', 'G#m': '10A', 'Ab min': '10A', 'G# min': '10A',
+    'A min': '5A', 'Am': '5A', 'Amin': '5A',
+    'B♭ min': '12A', 'Bbm': '12A', 'A#m': '12A', 'Bb min': '12A', 'A# min': '12A', 'Bbmin': '12A', 'A#min': '12A',
+    'B min': '7A', 'Bm': '7A', 'Bmin': '7A',
+    'C min': '2A', 'Cm': '2A', 'Cmin': '2A',
+    'C# min': '9A', 'C#m': '9A', 'D♭m': '9A', 'Dbm': '9A', 'Db min': '9A', 'C#min': '9A', 'Dbmin': '9A',
+    'D min': '4A', 'Dm': '4A', 'Dmin': '4A',
+    'E♭ min': '11A', 'Ebm': '11A', 'D#m': '11A', 'Eb min': '11A', 'D# min': '11A', 'Ebmin': '11A', 'D#min': '11A',
+    'E min': '6A', 'Em': '6A', 'Emin': '6A',
+    'F min': '1A', 'Fm': '1A', 'Fmin': '1A',
+    'F# min': '8A', 'F#m': '8A', 'G♭m': '8A', 'Gbm': '8A', 'Gb min': '8A', 'F#min': '8A', 'Gbmin': '8A',
+    'G min': '3A', 'Gm': '3A', 'Gmin': '3A',
+    'A♭ min': '10A', 'Abm': '10A', 'G#m': '10A', 'Ab min': '10A', 'G# min': '10A', 'Abmin': '10A', 'G#min': '10A',
   };
 
   const camelotKey = keyToCamelot[normalizedKey];

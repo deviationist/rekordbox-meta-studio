@@ -1,18 +1,17 @@
 import { ColumnDef } from '@tanstack/react-table';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 import { Genre } from '@/types/rekordbox/genre';
 import { Album } from '@/types/rekordbox/album';
 import { Artist } from '@/types/rekordbox/artist';
 import { Key } from '@/types/rekordbox/key';
 import { Track } from '@/types/rekordbox/track';
-import { formatFileSize, getKeyColor } from './helpers';
+import { formatFileSize } from './helpers';
 import { displayValue } from '@/components/table/utils';
 import { Artwork } from '@/components/table/common-columns/renderers/artwork';
 import { DateCell } from '@/components/table/common-columns/renderers/date';
 import { NamedItem } from '@/components/table/common-columns/renderers/named-item';
 import { Rating } from '@/components/table/common-columns/renderers/rating';
 import { createColumnHelper } from '@tanstack/react-table';
+import { ScaleKeyBadge } from '@/components/scale-key-badge';
 
 const columnHelper = createColumnHelper<Track>();
 
@@ -145,21 +144,9 @@ export const columnConfig = ({ includeArtwork }: ColumnConfigProps): ColumnDef<T
     accessorKey: 'key',
     header: 'Key',
     size: 105,
-    cell: ({ row }) => displayValue(row.getValue('key'), (key: Key) => {
-      const color = getKeyColor(key.scaleName);
-      return (
-        <Badge
-          variant="outline"
-          className={cn(
-            'w-12 text-xs overflow-hidden font-mono tracking-tighter',
-            color === 'blue' && 'border-blue-500 -my-1 text-blue-700 dark:text-blue-400',
-            color === 'purple' && 'border-purple-500 text-purple-700 dark:text-purple-400'
-          )}
-        >
-          {key.scaleName}
-        </Badge>
-      );
-    }),
+    cell: ({ row }) => displayValue(row.getValue('key'), (key: Key) =>
+      <ScaleKeyBadge scaleName={key.scaleName} label={key.scaleName} />
+    ),
   },
   {
     accessorKey: 'duration',

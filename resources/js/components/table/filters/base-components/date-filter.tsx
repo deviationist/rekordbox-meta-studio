@@ -11,10 +11,10 @@ import { ButtonLabel } from "./button-label";
 import { LucideIcon } from "lucide-react";
 import { getMinMaxLabelText } from "./utils";
 
-interface DurationRangeFilterProps {
+interface DateFilterProps {
   label: string;
-  minKey: string;
-  maxKey: string;
+  fromKey: string;
+  toKey: string;
   placeholder?: {
     min?: string;
     max?: string;
@@ -24,34 +24,34 @@ interface DurationRangeFilterProps {
   icon?: LucideIcon;
 }
 
-export function DurationRangeFilter({
+export function DateFilter({
   label,
-  minKey,
-  maxKey,
-  placeholder = { min: "Min", max: "Max" },
+  fromKey,
+  toKey,
+  placeholder = { min: "From", max: "To" },
   step = 1,
   className,
   icon: Icon,
-}: DurationRangeFilterProps) {
-  const [minValue, setMinValue] = useQueryState(
-    minKey,
+}: DateFilterProps) {
+  const [fromValue, setFromValue] = useQueryState(
+    fromKey,
     parseAsString
   );
-  const [maxValue, setMaxValue] = useQueryState(
-    maxKey,
+  const [toValue, setToValue] = useQueryState(
+    toKey,
     parseAsString
   );
 
   // Local state for immediate UI updates
-  const [localMin, setLocalMin] = useState<string>("");
-  const [localMax, setLocalMax] = useState<string>("");
+  const [localFrom, setLocalFrom] = useState<string>("");
+  const [localTo, setLocalTo] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
 
   const applyFilters = () => {
-    const min = localMin === "" ? null : DurationParser.normalizeString(localMin);
-    const max = localMax === "" ? null : DurationParser.normalizeString(localMax);
-    setMinValue(min);
-    setMaxValue(max);
+    const min = localFrom === "" ? null : DurationParser.normalizeString(localFrom);
+    const max = localTo === "" ? null : DurationParser.normalizeString(localTo);
+    setFromValue(min);
+    setToValue(max);
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -60,21 +60,21 @@ export function DurationRangeFilter({
     setIsOpen(false);
   };
 
-  const handleMinChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLocalMin(e.target.value);
+  const handleFromChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalFrom(e.target.value);
   };
 
-  const handleMaxChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setLocalMax(e.target.value);
+  const handleToChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setLocalTo(e.target.value);
 
-  const handleMinClear = () => setLocalMin("");
-  const handleMaxClear = () => setLocalMax("");
+  const handleFromClear = () => setLocalFrom("");
+  const handleToClear = () => setLocalTo("");
 
   const handleOpenChange = (open: boolean) => {
     if (open) {
       // Sync local state with query state when opening
-      setLocalMin(minValue?.toString() ?? "");
-      setLocalMax(maxValue?.toString() ?? "");
+      setLocalFrom(fromValue?.toString() ?? "");
+      setLocalTo(toValue?.toString() ?? "");
     } else {
       // Apply filters when dropdown closes
       applyFilters();
@@ -83,14 +83,14 @@ export function DurationRangeFilter({
   };
 
   const handleClearAll = () => {
-    setLocalMin("");
-    setLocalMax("");
-    setMinValue(null);
-    setMaxValue(null);
+    setLocalFrom("");
+    setLocalTo("");
+    setFromValue(null);
+    setToValue(null);
   };
 
-  const hasActiveFilter = !!minValue || !!maxValue;
-  const rangeText = useMemo<string | undefined>(() => (minValue || maxValue) ? getMinMaxLabelText({ minValue, maxValue }) : undefined, [minValue, maxValue]);
+  const hasActiveFilter = !!fromValue || !!toValue;
+  const rangeText = useMemo<string | undefined>(() => (fromValue || toValue) ? getMinMaxLabelText({ minValue: fromValue, maxValue: toValue }) : undefined, [fromValue, toValue]);
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={handleOpenChange} modal={false}>
@@ -107,10 +107,10 @@ export function DurationRangeFilter({
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col p-1 gap-2">
           <div className="flex">
             <InputWithCross
-              id={`${minKey}-input`}
-              value={localMin}
-              onChange={handleMinChange}
-              onClear={handleMinClear}
+              id={`${fromKey}-input`}
+              value={localFrom}
+              onChange={handleFromChange}
+              onClear={handleFromClear}
               placeholder={placeholder.min}
               containerClassName="rounded-r-none border-r-0"
               step={step}
@@ -118,18 +118,15 @@ export function DurationRangeFilter({
             />
             <div className="w-px h-9 border-r border-input" />
             <InputWithCross
-              id={`${maxKey}-input`}
-              value={localMax}
-              onChange={handleMaxChange}
-              onClear={handleMaxClear}
+              id={`${toKey}-input`}
+              value={localTo}
+              onChange={handleToChange}
+              onClear={handleToClear}
               placeholder={placeholder.max}
               containerClassName="rounded-l-none border-l-0"
               step={step}
               className="h-9"
             />
-          </div>
-          <div className="text-xs text-muted-foreground">
-            Format: 1h2m30s, 5m, 3:37 e.g.
           </div>
           <div className="flex gap-2">
             <Button

@@ -178,13 +178,13 @@ class TrackListController extends BaseController
             $query->where('BPM', '>=', $request->getMaxBpm());
         }
 
-        // Rating range filters
-        if ($request->filled('minRating')) {
-            $query->where('Rating', '>=', $request->get('minRating'));
-        }
-
-        if ($request->filled('maxRating')) {
-            $query->where('Rating', '<=', $request->get('maxRating'));
+        // Rating filters
+        if ($request->filled('minRating') && $request->filled('maxRating')) {
+            $query->whereBetween('Rating', [$request->getMinRating(), $request->getMaxRating()]);
+        } else if ($request->filled('minRating')) {
+            $query->where('Rating', '>=', $request->getMinRating());
+        } else if ($request->filled('maxRating')) {
+            $query->where('Rating', '<=', $request->getMaxRating());
         }
     }
 }

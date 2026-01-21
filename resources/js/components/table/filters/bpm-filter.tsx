@@ -1,5 +1,5 @@
 import { Gauge } from "lucide-react";
-import { NumericRangeFilter } from "./base-components/numeric-range-filter";
+import { NumericRangeFilter } from "./base-components/numeric-range/numeric-range-filter";
 
 export function BpmFilter() {
   return (
@@ -8,6 +8,8 @@ export function BpmFilter() {
       maxKey="maxBpm"
       label="BPM"
       icon={Gauge}
+      min={0}
+      max={9999}
     />
   );
 }

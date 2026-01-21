@@ -31,10 +31,24 @@ class TrackIndexRequest extends FormRequest
             'minLength' => ['sometimes', 'string', new DurationFormat],
             'maxLength' => ['sometimes', 'string', new DurationFormat],
             'minRating' => ['sometimes', 'integer', 'min:0', 'max:5'],
-            'maxRating' => ['sometimes', 'integer', 'min:0', 'max:5', 'gte:min_rating'],
+            'maxRating' => ['sometimes', 'integer', 'min:0', 'max:5', 'gte:minRating'],
             'sortBy' => ['sometimes', 'string', 'in:' . implode(',', self::ALLOWED_SORT_FIELDS)],
             'sortOrder' => ['sometimes', 'string', 'in:asc,desc'],
         ];
+    }
+
+    public function getMinRating(): ?int
+    {
+        return $this->filled('minRating')
+            ? $this->input('minRating')
+            : null;
+    }
+
+    public function getMaxRating(): ?int
+    {
+        return $this->filled('maxRating')
+            ? $this->input('maxRating')
+            : null;
     }
 
     public function getMinBpm(): ?int

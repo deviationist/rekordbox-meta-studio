@@ -1,25 +1,23 @@
 import { useMemo, useState } from "react";
-import { LucideIcon, X } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import { useQueryState } from "nuqs";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuTrigger,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { FilterItem as FilterItem } from "@/types/table";
 import { InputWithCross } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { ButtonLabel } from "./button-label";
 
 type FilterSelectProps = {
   queryParam: string;
   search?: boolean;
   label: string;
   icon?: LucideIcon;
+  className?: string;
   selectableItems?: FilterItem[];
   itemComponent?: (item: FilterItem) => React.ReactElement;
 };
@@ -29,6 +27,7 @@ export function FilterSelect({
   search = true,
   label,
   icon: Icon,
+  className,
   selectableItems,
   itemComponent,
 }: FilterSelectProps) {
@@ -80,8 +79,7 @@ export function FilterSelect({
     setSelectedIds(idsArray.length > 0 ? idsArray.join(",") : null);
   };
 
-  const handleClear = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleClear = () => {
     setSelectedIds(null);
     setActiveItems([]);
   };
@@ -94,39 +92,14 @@ export function FilterSelect({
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen} modal={false}>
-
-      <DropdownMenuTrigger asChild>
-        <div className="flex items-center gap-0 w-full">
-          <Button
-            size="sm"
-            variant="outline"
-            className={cn(
-              "cursor-pointer flex-1 inline-flex items-center gap-2",
-              hasActiveFilters ? "rounded-r-none" : "",
-          )}
-          >
-            {Icon && <Icon className="h-4 w-4" />}
-            {label}
-            {hasActiveFilters && (
-              <Badge variant="secondary">
-                {activeCount}
-              </Badge>
-            )}
-          </Button>
-          {hasActiveFilters && (
-            <Button
-              variant="outline"
-              size="sm"
-              title="Clear all"
-              className="cursor-pointer has-[>svg]:px-2 rounded-l-none border-l-0"
-              onClick={handleClear}
-              onPointerDown={(e) => e.stopPropagation()}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
-      </DropdownMenuTrigger>
+      <ButtonLabel
+        className={className}
+        buttonIcon={Icon}
+        label={label}
+        pillContent={hasActiveFilters ? activeCount : undefined}
+        hasActiveFilter={hasActiveFilters}
+        handleClearAll={handleClear}
+      />
 
       <DropdownMenuContent align="start" style={{ width: 'var(--radix-dropdown-menu-trigger-width)' }}>
         {search && (

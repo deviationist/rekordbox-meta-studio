@@ -103,7 +103,11 @@ export function ColumnControl<TData>({
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="cursor-pointer" size="sm">
+        <Button
+          variant="outline"
+          className="cursor-pointer justify-start"
+          size="sm"
+        >
           <Settings2 className="h-4 w-4" />
           Columns
         </Button>

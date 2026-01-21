@@ -21,6 +21,12 @@ import { PlaylistFilter } from '@/components/table/filters/playlist-filter';
 import { FileTypeFilter } from '@/components/table/filters/file-type-filter';
 import { BpmFilter } from '@/components/table/filters/bpm-filter';
 import { DurationFilter } from '@/components/table/filters/duration-filter';
+import { RatingFilter } from '@/components/table/filters/rating-filter';
+import { AudioQualityFilter } from '@/components/table/filters/audio-quality-filter';
+import { ReleaseYearFilter } from '@/components/table/filters/release-year-filter';
+import { FileSizeFilter } from '@/components/table/filters/file-size-filter';
+import { ReleaseDateFilter } from '@/components/table/filters/release-date-filter';
+import { DateCreatedFilter } from '@/components/table/filters/date-created-filter';
 
 type PageProps = {
   data: PageData;
@@ -72,9 +78,15 @@ export default function Index({ data }: PageProps) {
               <ComposerFilter />,
               <PlaylistFilter />,
               <FileTypeFilter />,
+              <FileSizeFilter />,
               <KeyFilter />,
               <BpmFilter />,
+              <AudioQualityFilter />,
+              <ReleaseYearFilter />,
+              <ReleaseDateFilter />,
+              <DateCreatedFilter />,
               <DurationFilter />,
+              <RatingFilter />,
               <LabelFilter />,
               <AlbumFilter />,
               <GenreFilter />,

@@ -97,7 +97,7 @@ export function TableHeaderColumn<TData>({
     <div className="flex-1 min-w-0 text-sm truncate" title={column.columnDef.header as string}>
       {flexRender(column.columnDef.header, header.getContext())}
     </div>
-  ), [flexRender, column.columnDef.header, header]);
+  ), [column.columnDef.header, header]);
 
   return (
     <div

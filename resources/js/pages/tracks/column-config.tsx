@@ -111,10 +111,10 @@ export const columnConfig = ({ includeArtwork }: ColumnConfigProps): ColumnDef<T
     cell: ({ row }) => <NamedItem<Artist> namedItem={row.getValue('remixer')} />,
   },
   {
-    accessorKey: 'year',
-    header: 'Year',
-    size: 110,
-    cell: ({ row }) => displayValue(row.getValue('year')),
+    accessorKey: 'releaseYear',
+    header: 'Release Year',
+    size: 160,
+    cell: ({ row }) => displayValue(row.getValue('releaseYear')),
   },
   {
     accessorKey: 'releaseDate',

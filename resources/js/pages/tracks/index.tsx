@@ -27,6 +27,11 @@ import { ReleaseYearFilter } from '@/components/table/filters/release-year-filte
 import { FileSizeFilter } from '@/components/table/filters/file-size-filter';
 import { ReleaseDateFilter } from '@/components/table/filters/release-date-filter';
 import { DateCreatedFilter } from '@/components/table/filters/date-created-filter';
+import { OriginalArtistFilter } from '@/components/table/filters/original-artist-filter';
+import { StockDateFilter } from '@/components/table/filters/stock-date-filter';
+import { PlayCountFilter } from '@/components/table/filters/play-count-filter';
+import { ArtworkFilter } from '@/components/table/filters/artwork-filter';
+import { TagFilter } from '@/components/table/filters/tag-filter';
 
 type PageProps = {
   data: PageData;
@@ -73,18 +78,23 @@ export default function Index({ data }: PageProps) {
             endpoint={route('library.tracks.index')}
             filterComponents={[
               <ArtistFilter />,
+              <ArtworkFilter />,
               <AlbumArtistFilter />,
+              <OriginalArtistFilter />,
               <RemixerFilter />,
               <ComposerFilter />,
               <PlaylistFilter />,
+              <TagFilter />,
               <FileTypeFilter />,
               <FileSizeFilter />,
               <KeyFilter />,
               <BpmFilter />,
+              <PlayCountFilter />,
               <AudioQualityFilter />,
               <ReleaseYearFilter />,
               <ReleaseDateFilter />,
               <DateCreatedFilter />,
+              <StockDateFilter />,
               <DurationFilter />,
               <RatingFilter />,
               <LabelFilter />,

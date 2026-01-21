@@ -8,8 +8,7 @@ export function ReleaseYearFilter() {
       maxKey="maxReleaseYear"
       label="Release Year"
       placeholder={{ min: "From", max: "To" }}
-      min={0}
-      max={9999}
+      inputProps={{ min: 0, max: 9999 }}
       icon={ClockArrowUp}
     />
   );

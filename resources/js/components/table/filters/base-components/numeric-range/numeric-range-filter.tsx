@@ -8,13 +8,14 @@ import { useMemo, useState } from "react";
 import { ButtonLabel } from "../button-label";
 import { LucideIcon } from "lucide-react";
 import { getMinMaxLabelText } from "../utils";
-import { RangeField, RangeItemProps } from "./range-field";
+import { NumericRangeField, NumericRangeItemProps } from "./numeric-range-field";
 import { ButtonFooter } from "./button-section";
 
-type NumericRangeFilterProps = Omit<RangeItemProps, "label"> & {
+type NumericRangeFilterProps = Omit<NumericRangeItemProps, "label"> & {
   label: string;
   className?: string;
   icon?: LucideIcon;
+  inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
 export function NumericRangeFilter({
@@ -22,12 +23,10 @@ export function NumericRangeFilter({
   minKey,
   maxKey,
   placeholder = { min: "Min", max: "Max" },
-  min,
-  max,
-  step = 1,
   suffix,
   className,
   icon,
+  inputProps = {},
 }: NumericRangeFilterProps) {
   const [minValue, setMinValue] = useQueryState(
     minKey,
@@ -109,8 +108,9 @@ export function NumericRangeFilter({
       />
       <DropdownMenuContent align="start" style={{ width: 'var(--radix-dropdown-menu-trigger-width)' }}>
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col p-1 gap-2">
-          <RangeField
-            {...{ placeholder, min, max, minKey, maxKey, step, suffix }}
+          <NumericRangeField
+            {...{ placeholder, minKey, maxKey, suffix }}
+            inputProps={inputProps}
             minValue={localMin}
             maxValue={localMax}
             handleMinInputChange={handleMinChange}

@@ -14,7 +14,6 @@ export function AudioQualityFilter() {
           placeholder: { min: "Min", max: "Max" },
           step: 1000,
           suffix: "kHz",
-          min: 0,
         },
         {
           label: "Bit Depth",
@@ -23,7 +22,6 @@ export function AudioQualityFilter() {
           placeholder: { min: "Min", max: "Max" },
           step: 8,
           suffix: "bit",
-          min: 0,
         },
         {
           label: "Bit Rate",
@@ -32,7 +30,6 @@ export function AudioQualityFilter() {
           placeholder: { min: "Min", max: "Max" },
           step: 32,
           suffix: "kbps",
-          min: 0,
         },
       ]}
     />

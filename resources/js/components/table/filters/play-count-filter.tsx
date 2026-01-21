@@ -1,13 +1,13 @@
-import { Gauge } from "lucide-react";
+import { Play } from "lucide-react";
 import { NumericRangeFilter } from "./base-components/numeric-range/numeric-range-filter";
 
-export function BpmFilter() {
+export function PlayCountFilter() {
   return (
     <NumericRangeFilter
-      minKey="minBpm"
-      maxKey="maxBpm"
-      label="BPM"
-      icon={Gauge}
+      minKey="minPlayCount"
+      maxKey="maxPlayCount"
+      label="Play Count"
+      icon={Play}
       inputProps={{ min: 0, max: 9999 }}
     />
   );

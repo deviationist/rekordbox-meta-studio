@@ -11,9 +11,12 @@ use App\Http\Resources\Rekordbox\TrackIndexResource;
 use App\Models\Rekordbox\Key;
 use App\Models\Rekordbox\Playlist;
 use App\Models\Rekordbox\PlaylistItem;
+use App\Models\Rekordbox\Tag;
+use App\Models\Rekordbox\TagItem;
 use App\Models\Rekordbox\Track;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Inertia\Response;
 
 class TrackListController extends BaseController
@@ -23,7 +26,6 @@ class TrackListController extends BaseController
 
     public function __invoke(TrackIndexRequest $request): Response
     {
-        //dd($request->get('minBpm'));
         $this->filterOptions = $this->filterOptions($request);
         $query = Track::query()
             ->with($this->resolveRelations($request));
@@ -65,6 +67,9 @@ class TrackListController extends BaseController
             'playlists' => FilterItem::collection(Playlist::query()
                 ->orderBy('Name')
                 ->get(['ID', Playlist::$filterLabelKey]))->resolve(),
+            'tags' => FilterItem::collection(Tag::query()
+                ->orderBy('Name')
+                ->get(['ID', Tag::$filterLabelKey]))->resolve(),
             'fileTypes' => Track::groupBy('FileType')->select('FileType', DB::raw('count(*) as FileTypeCount'))->get()->map(function ($fileType) {
                 return [
                     'id' => $fileType['file_type_label'],
@@ -74,13 +79,16 @@ class TrackListController extends BaseController
         ];
     }
 
-    private function mappedSortKey(TrackIndexRequest $request): string | null
+    private function mappedSortKey(TrackIndexRequest $request): string
     {
         switch ($request->get('sortBy')) {
             case 'duration':
                 return 'Length';
+            case 'playCount':
+                return 'DJPlayCount';
+            default:
+                return Str::studly($request->get('sortBy'));
         }
-        return null;
     }
 
     private function applySorting(Builder $query, TrackIndexRequest $request): void
@@ -136,16 +144,25 @@ class TrackListController extends BaseController
             $query->whereIn('ID', PlaylistItem::query()->whereIn('PlaylistID', $request->get('playlist'))->pluck('ContentID'));
         }
 
+        if ($request->filled('tag')) {
+            $query->whereIn('ID', TagItem::query()->whereIn('MyTagID', $request->get('tag'))->pluck('ContentID'));
+        }
+    }
+
+    private function applyFilters(Builder $query, TrackIndexRequest $request): void
+    {
+        if ($request->boolean('hasArtwork')) {
+            $query->whereNotNull('ImagePath')
+                ->whereNot('ImagePath', '');
+        }
+
         if ($request->filled('fileType')) {
             $fileTypes = collect($request->get('fileType'))->map(function ($fileType) {
                 return FileType::tryFromName($fileType)->value;
             })->toArray();
             $query->whereIn('FileType', $fileTypes);
         }
-    }
 
-    private function applyFilters(Builder $query, TrackIndexRequest $request): void
-    {
         // Search filter
         if ($request->has('search')) {
             $search = $request->get('search');
@@ -160,6 +177,15 @@ class TrackListController extends BaseController
             });
         }
 
+        // Release year filters
+        if ($request->filled('minReleaseYear') && $request->filled('maxReleaseYear')) {
+            $query->whereBetween('ReleaseYear', [$request->get('minReleaseYear'), $request->get('maxReleaseYear')]);
+        } else if ($request->filled('minReleaseYear')) {
+            $query->where('ReleaseYear', '>=', $request->get('minReleaseYear'));
+        } else if ($request->filled('maxReleaseYear')) {
+            $query->where('ReleaseYear', '<=', $request->get('maxReleaseYear'));
+        }
+
         // Duration filters
         if ($request->filled('minLength') && $request->filled('maxLength')) {
             $query->whereBetween('Length', [$request->getMinLengthInSeconds(), $request->getMaxLengthInSeconds()]);
@@ -169,13 +195,31 @@ class TrackListController extends BaseController
             $query->where('Length', '<=', $request->getMaxLengthInSeconds());
         }
 
+        // Play count filters
+        if ($request->filled('minPlayCount') && $request->filled('maxPlayCount')) {
+            $query->whereBetween('DJPlayCount', [$request->get('minPlayCount'), $request->get('maxPlayCount')]);
+        } else if ($request->filled('minPlayCount')) {
+            $query->where('DJPlayCount', '>=', $request->get('minPlayCount'));
+        } else if ($request->filled('maxPlayCount')) {
+            $query->where('DJPlayCount', '<=', $request->get('maxPlayCount'));
+        }
+
+        // File size range filters
+        if ($request->filled('minFileSize') && $request->filled('maxFileSize')) {
+            $query->whereBetween('FileSize', [$request->getMinFileSize(), $request->getMaxFileSize()]);
+        } else if ($request->filled('minFileSize')) {
+            $query->where('FileSize', '>=', $request->getMinFileSize());
+        } else if ($request->filled('maxFileSize')) {
+            $query->where('FileSize', '<=', $request->getMaxFileSize());
+        }
+
         // BPM range filters
         if ($request->filled('minBpm') && $request->filled('maxBpm')) {
             $query->whereBetween('BPM', [$request->getMinBpm(), $request->getMaxBpm()]);
         } else if ($request->filled('minBpm')) {
-            $query->where('BPM', '<=', $request->getMinBpm());
+            $query->where('BPM', '>=', $request->getMinBpm());
         } else if ($request->filled('maxBpm')) {
-            $query->where('BPM', '>=', $request->getMaxBpm());
+            $query->where('BPM', '<=', $request->getMaxBpm());
         }
 
         // Rating filters

@@ -33,7 +33,7 @@ export function ButtonLabel({
         <Button
           variant="outline"
           className={cn(
-            "cursor-pointer flex-1 inline-flex items-center justify-start gap-2 min-w-0",
+            "group cursor-pointer flex-1 inline-flex items-center justify-start gap-2 min-w-0",
             pillContent ? "gap-1.5 !px-2" : "",
             hasActiveFilter ? "rounded-r-none" : "",
             className,
@@ -50,7 +50,7 @@ export function ButtonLabel({
               <Badge
                 variant="secondary"
                 title={pillContentString}
-                className="text-[10px] border-0 px-1.5 py-0.5 gap-1 min-w-0 max-w-full whitespace-normal"
+                className="text-[10px] px-1.5 py-0.5 gap-1 min-w-0 max-w-full whitespace-normal group-hover:border-accent-foreground"
               >
                 {PillIcon && <PillIcon className="!h-2 !w-2 shrink-0 fill-current" />}
                 <span className="truncate hyphens-auto" lang="en">

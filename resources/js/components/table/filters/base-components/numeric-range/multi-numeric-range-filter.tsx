@@ -6,14 +6,15 @@ import { LucideIcon } from "lucide-react";
 import { parseAsInteger, useQueryStates } from "nuqs";
 import { useMemo, useState } from "react";
 import { ButtonLabel } from "../button-label";
-import { RangeField, type RangeItemProps } from './range-field';
+import { NumericRangeField, type NumericRangeItemProps } from './numeric-range-field';
 import { ButtonFooter } from "./button-section";
 
 interface MultiNumericRangeFilterProps {
   label: string;
-  fields: RangeItemProps[];
+  fields: NumericRangeItemProps[];
   className?: string;
   icon?: LucideIcon;
+  inputProps?: React.ButtonHTMLAttributes<HTMLInputElement>;
 }
 
 export function MultiNumericRangeFilter({
@@ -21,6 +22,7 @@ export function MultiNumericRangeFilter({
   fields,
   className,
   icon: Icon,
+  inputProps = {},
 }: MultiNumericRangeFilterProps) {
   // Build the parsers object dynamically
   const parsers = fields.reduce((acc, field) => {
@@ -55,15 +57,15 @@ export function MultiNumericRangeFilter({
     setIsOpen(false);
   };
 
-  const handleMinInputChange = (field: RangeItemProps, value: string) => {
+  const handleMinInputChange = (field: NumericRangeItemProps, value: string) => {
     setLocalValues((prev) => ({ ...prev, [field.minKey]: value }));
   };
 
-  const handleMaxInputChange = (field: RangeItemProps, value: string) => {
+  const handleMaxInputChange = (field: NumericRangeItemProps, value: string) => {
     setLocalValues((prev) => ({ ...prev, [field.maxKey]: value }));
   };
 
-  const handleInputClear = (field: RangeItemProps) => {
+  const handleInputClear = (field: NumericRangeItemProps) => {
     setLocalValues((prev) => ({ ...prev, [field.minKey]: "" }));
     setLocalValues((prev) => ({ ...prev, [field.maxKey]: "" }));
   };
@@ -119,14 +121,12 @@ export function MultiNumericRangeFilter({
         hasActiveFilter={hasActiveFilter}
         handleClearAll={handleClearAllFields}
       />
-
       <DropdownMenuContent align="start" style={{ width: 'var(--radix-dropdown-menu-trigger-width)' }}>
         <form onSubmit={handleSubmit} className="flex-1 flex flex-col p-1 gap-3">
           {fields.map((field, index) => {
             const minValue = localValues[field.minKey] ?? "";
             const maxValue = localValues[field.maxKey] ?? "";
-
-            return <RangeField
+            return <NumericRangeField
               key={index}
               {...field}
               shouldDisplayClearButton={true}
@@ -135,96 +135,10 @@ export function MultiNumericRangeFilter({
               clearField={() => handleInputClear(field)}
               handleMinInputChange={(e: React.ChangeEvent<HTMLInputElement>) => handleMinInputChange(field, e.target.value)}
               handleMaxInputChange={(e: React.ChangeEvent<HTMLInputElement>) => handleMaxInputChange(field, e.target.value)}
+              inputProps={inputProps}
             />
-
-            /*
-            return (
-              <div key={field.minKey} className="flex flex-col gap-1.5">
-                <div className="flex flex-row items-center">
-                  <label className="text-sm flex-1 font-medium text-muted-foreground">
-                    {field.label}
-                  </label>
-                  {(minValue || maxValue) && (
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="cursor-pointer h-auto"
-                      onClick={() => {
-                        handleInputClear(field.minKey);
-                        handleInputClear(field.maxKey);
-                      }}
-                    >
-                      Clear
-                    </Button>
-                  )}
-                </div>
-                <div className="flex items-center">
-                  <Input
-                    id={`${field.minKey}-input`}
-                    type="number"
-                    value={minValue}
-                    onChange={(e) => handleInputChange(field.minKey, e.target.value)}
-                    placeholder={field.placeholder?.min ?? "Min"}
-                    min={field.min}
-                    max={field.max}
-                    step={field.step ?? 1}
-                    className="h-9 px-2 flex-1 rounded-r-none border-r-0"
-                  />
-                  <div className="w-px h-9 border-r border-input" />
-                  <Input
-                    id={`${field.maxKey}-input`}
-                    type="number"
-                    value={maxValue}
-                    onChange={(e) => handleInputChange(field.maxKey, e.target.value)}
-                    placeholder={field.placeholder?.max ?? "Max"}
-                    min={field.min}
-                    max={field.max}
-                    step={field.step ?? 1}
-                    className={cn(
-                      "h-9 px-2 flex-1",
-                      field.suffix ? "rounded-none border-l-0" : "rounded-l-none",
-                    )}
-                  />
-                  {field.suffix && (
-                    <div className="border-input border flex items-center border-l-0 justify-center h-9 rounded-r-md">
-                      <div className="w-9.5 text-muted-foreground text-xs text-center">
-                        {field.suffix}
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <DropdownMenuSeparator />
-              </div>
-            );
-            */
-
           })}
-
           <ButtonFooter hasActiveFilter={hasActiveFilter} handleClear={handleClearAllFields} />
-
-          {/*
-          <div className="flex gap-2">
-            <Button
-              type="submit"
-              variant="default"
-              size="sm"
-              className="flex-1 cursor-pointer"
-            >
-              Apply
-            </Button>
-            {hasActiveFilter && (
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="flex-1 cursor-pointer"
-                onClick={handleClearAll}
-              >
-                Clear
-              </Button>
-            )}
-          </div>
-          */}
         </form>
       </DropdownMenuContent>
     </DropdownMenu>
